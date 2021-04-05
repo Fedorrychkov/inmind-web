@@ -93,7 +93,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 0,
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars-experimental': 'error',
+    '@typescript-eslint/no-unused-vars-experimental': 'warn',
     'no-redeclare': 'off',
     '@typescript-eslint/no-redeclare': ['error'],
     'comma-style': [

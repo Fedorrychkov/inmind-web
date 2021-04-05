@@ -13,7 +13,7 @@ export const Box: BoxWebComponent = styled.div.attrs(mapTestId)
 	align-items: stretch;
 	border-width: 0;
 	border-style: solid;
-	border-color: ${(p: any) => p.theme.colors.contrast};
+	border-color: ${p => p.theme.colors.contrast};
 	display: flex;
 	flex-basis: auto;
 	flex-direction: column;

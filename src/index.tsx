@@ -1,13 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { App } from './App'
-import 'normalize.css'
 import './index.css'
 import { reportWebVitals } from './reportWebVitals'
+import { Routes } from './routes'
+import { GlobalStyle } from './theming/global'
+import { ThemeProvider } from './theming/provider'
+import { snowTheme } from './theming/snow'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={snowTheme}>
+      <GlobalStyle />
+      <Routes />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 )

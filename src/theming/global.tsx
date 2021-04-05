@@ -7,11 +7,11 @@ export const GlobalStyle = createGlobalStyle`
 	${reset}
 
 	body {
-		font-family: 'Circular Std', Helvetica, Arial, sans-serif;
+		font-family: 'Montserrat', sans-serif;
 		font-weight: 400;
 		line-height: 1.38;
 		color: ${p => p.theme.colors.contrast};
-		background: ${p => p.theme.colors.contrast};
+		background: ${p => p.theme.colors.base};
 		max-width: 100%;
 		overflow-x: hidden;
 		overflow-y: scroll;
