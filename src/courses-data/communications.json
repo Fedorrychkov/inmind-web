@@ -1,0 +1,78 @@
+{
+  "data": {
+    "name": "Course Name 1",
+    "chapters": [
+      {
+        "id": 1,
+        "name": "Поведение",
+        "messages": [
+          {
+            "type": "TEXT",
+            "content": "Something Text 1"
+          },
+          {
+            "type": "TEXT",
+            "content": "Something Text 2"
+          },
+          {
+            "type": "TEXT",
+            "content": "Something Text 3"
+          },
+          {
+            "type": "CHOOSEN",
+            "incorrectType": "WITH_AdDITIONAL_CONTENT",
+            "content": "Maybe Some Text?",
+            "answer": 2,
+            "options": [
+              {
+                "id": 0,
+                "content": "Text Button 0"
+              },
+              {
+                "id": 1,
+                "content": "Text Button 1"
+              },
+              {
+                "id": 2,
+                "content": "Text Button 2"
+              },
+              {
+                "id": 3,
+                "content": "Text Button 3"
+              },
+              {
+                "id": 4,
+                "content": "Text Button 4"
+              },
+              {
+                "id": 5,
+                "content": "Text Button 5"
+              }
+            ],
+            "additionalContent": []
+          },        
+          {
+            "type": "TEXT",
+            "content": "Отлично! Вы справились с данным материалом, перейдем дальше!"
+          },
+          {
+            "type": "TEXT",
+            "content": "Something Text 3"
+          },
+          {
+            "type": "TEXT",
+            "content": "Something Text 3"
+          },
+          {
+            "type": "TEXT",
+            "content": "Something Text 3"
+          },
+          {
+            "type": "TEXT",
+            "content": "Something Text 3"
+          }
+        ]
+      }
+    ]
+  }
+}
