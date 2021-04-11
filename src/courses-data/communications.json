@@ -26,10 +26,11 @@
             "content": "Something Text 3"
           },
           {
+            "id": 1000000,
             "type": "CHOOSEN",
-            "incorrectType": "WITH_AdDITIONAL_CONTENT",
+            "incorrectType": "WITH_ADDITIONAL_CONTENT",
             "content": "Maybe Some Text?",
-            "answer": 2,
+            "currentAnswer": 2,
             "options": [
               {
                 "id": 0,
@@ -61,6 +62,22 @@
           {
             "type": "TEXT",
             "content": "Отлично! Вы справились с данным материалом, перейдем дальше!"
+          },
+          {
+            "type": "TEXT",
+            "content": "Something Text 3"
+          },
+          {
+            "type": "TEXT",
+            "content": "Something Text 3"
+          },
+          {
+            "type": "TEXT",
+            "content": "Something Text 3"
+          },
+          {
+            "type": "TEXT",
+            "content": "Something Text 3"
           },
           {
             "type": "TEXT",

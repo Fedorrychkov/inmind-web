@@ -24,6 +24,14 @@ const absoluteColors = {
   red: 'rgba(255, 87, 87, 1)',
   secondary: 'rgba(254, 218, 3, 1)',
   protocol: 'rgba(0, 163, 255, 1)',
+  thinBackground: 'rgba(247, 251, 255, 1)',
+  orange: 'rgba(255, 200, 118, 1)',
+  brown: 'rgba(234, 180, 143, 1)',
+  blue: 'rgba(159, 216, 229, 1)',
+  green: 'rgba(162, 234, 171, 1)',
+  pink: 'rgba(255, 194, 180, 1)',
+  common: 'rgba(231, 231, 231, 1)',
+  commonBolder: 'rgba(190, 190, 190, 1)',
 }
 
 const calculatedColors = {

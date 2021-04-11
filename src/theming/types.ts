@@ -2,14 +2,22 @@ export const uiSizes = ['sm', 'md', 'lg'] as const
 export type UISize = typeof uiSizes[number]
 
 export type InMindAbsoluteColor = {
-  contrast: string,
-  black: string,
-  base: string,
-  white: string,
-  primary: string,
-  red: string,
-  secondary: string,
-  protocol: string,
+  contrast: string
+  black: string
+  base: string
+  white: string
+  primary: string
+  red: string
+  secondary: string
+  protocol: string
+  thinBackground: string
+  orange: string
+  brown: string
+  blue: string
+  green: string
+  pink: string
+  common: string
+  commonBolder: string
 }
 
 export type InMindCalculatedColor = {

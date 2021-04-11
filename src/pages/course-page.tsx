@@ -1,35 +1,43 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import { ChatInner } from '~/components/chat/inner'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { CourseInner } from '~/components/course/inner'
 import { Onboarding } from '~/components/course/onboarding'
 import { Box } from '~/primitives/box'
 import { Container } from '~/primitives/container'
 import { getCourseById } from '~/services/courses'
+import { setCurrentCourse } from '~/store/course-progress'
+import { IStore } from '~/store/types'
 import { styled } from '~/theming/styled'
 
 export const CoursePage = () => {
-  const courseContent = getCourseById(1)
   const [isOnboarding, setOnboarding] = useState(true)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const courseContent = getCourseById(1)
+    console.log(courseContent, 'courseContent')
+    dispatch(setCurrentCourse(courseContent))
+  }, [dispatch])
+
+  const { currentCourse } = useSelector((state: IStore) => state.courseProgress)
 
   const {
-    id,
-    name: courseName,
-    description: courseDescription,
-    author: {
-      name,
-      description,
-      intro,
-    },
-  } = courseContent
+    author,
+    name,
+    description,
+  } = currentCourse || {}
 
   const onboardingProps = useMemo(() => ({
-    title: courseName,
-    description: courseDescription,
-    author: {
-      name,
-      description,
-      intro,
-    },
-  }), [courseDescription, courseName, name, description, intro])
+    title: name,
+    description,
+    author,
+  }), [name, description, author])
+
+  useEffect(() => {
+    // TODO: Get all messages from course with flat list (without progress bar in chat header)
+    // TODO: Set chat history to localstorage?
+    // TODO: Need to create simple chat flow with simple buttons
+  }, [currentCourse])
 
   const onStart = useCallback(() => {
     setOnboarding(false)
@@ -38,11 +46,13 @@ export const CoursePage = () => {
   return (
     <BackgroundContainer>
       <Container uiSaze="lg">
-        <BoxContainer alignSelf="center" maxWidth={752} px={4} my={4}>
-          {isOnboarding ? <Onboarding onPress={onStart} {...onboardingProps} /> : (
-            <ChatInner flex={1} />
-          )}
-        </BoxContainer>
+        {currentCourse && (
+          <BoxContainer alignSelf="center" maxWidth={752} my={4}>
+            {isOnboarding ? <Onboarding onPress={onStart} px={4} {...onboardingProps} /> : (
+              <CourseInner course={currentCourse} flex={1} />
+            )}
+          </BoxContainer>
+        )}
       </Container>
     </BackgroundContainer>
   )

@@ -1,0 +1,4 @@
+export const COURSE_INTERACTIONS = {
+  CHOOSEN: 'CHOOSEN',
+  TEXT_INPUT: 'TEXT_INPUT',
+}

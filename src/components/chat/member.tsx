@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box } from '~/primitives/box'
+import { Box, BoxProps } from '~/primitives/box'
 import { Icon } from '~/primitives/icon'
 import { IconType } from '~/primitives/icon/types'
 import { Text } from '~/primitives/text'
@@ -11,7 +11,7 @@ type Props = {
   width?: string | number
   height?: string | number
   icon?: IconType
-}
+} & BoxProps
 
 export const Member = ({
   name,
@@ -19,9 +19,10 @@ export const Member = ({
   width = 72,
   height = 72,
   icon = 'person',
+  ...boxProps
 }: Props) => {
   return (
-    <Box flexDirection="row" alignItems="center">
+    <Box flexDirection="row" alignItems="center" {...boxProps}>
       <Avatar>
         <Icon width={width} height={height} type={icon} />
       </Avatar>
