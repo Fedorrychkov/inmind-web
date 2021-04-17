@@ -2,21 +2,26 @@ import React from 'react'
 import { Text } from '~/primitives/text'
 import { Touchable, TouchableProps } from '~/primitives/touchable'
 import { styled } from '~/theming/styled'
+import { SizeProps } from '~/theming/variants/size'
+import { WeightProps } from '~/theming/variants/weight'
 
 type Props = {
   onPress: () => void
   color?: any
   children: React.ReactNode
-} & TouchableProps
+} & TouchableProps & SizeProps & WeightProps
 
 export const Button = ({
   onPress = () => {},
   color,
   children,
+  fontSize = 22,
+  lineHeight = 0.9,
+  weight,
   ...touchableProps
 }: Props) => (
   <Pressable onClick={onPress} {...touchableProps}>
-    <Text color={color || 'white'} fontSize={22} lineHeight={0.9}>{children}</Text>
+    <Text color={color || 'white'} fontSize={fontSize} lineHeight={lineHeight} weight={weight}>{children}</Text>
   </Pressable>
 )
 

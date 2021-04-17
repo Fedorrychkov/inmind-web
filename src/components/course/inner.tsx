@@ -4,6 +4,7 @@ import { useWrappedRef } from '~/hooks/use-ref'
 import { IMessage } from '~/interfaces/ICourse'
 import { Box, BoxProps } from '~/primitives/box'
 import { getMessagesFromChapters } from '~/services/courses'
+import { COURSE_INTERACTIONS } from '~/constants/course-interaction-types'
 import { styled } from '~/theming/styled'
 import { ChatInteraction } from '../chat/chat-interaction'
 import { MessageGroup } from '../chat/message-group'
@@ -17,8 +18,11 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   const { name, author } = course
   const scrollRef = useWrappedRef()
   const [messages, setMessages] = useState<IMessage[]>([])
+  const [currentMessage, setCurrentMessage] = useState<IMessage | any>({})
   const [userAnswers, setUserAnswers] = useState([])
-  const [timerId, setTimerId] = useState(() => setTimeout(() => {}, 0))
+  const [currentType, setCurrentType] = useState('')
+  const [awaitedMessages, setAwaitedMessages] = useState<IMessage[]>([])
+  const [responseOptions, setRespnseOptions] = useState([])
   const [messagesHistory, setMessagesHistory] = useState([])
 
   useEffect(() => {
@@ -39,7 +43,22 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     return flattedMessages
   }, [course])
 
-  const handleSetMessages = useCallback((messages: IMessage[], userAnswers?: any, messagesHistory?: any) => {
+  const handleShowAnswerQuestions = useCallback((message, cb = () => {}, otherMessages: IMessage[]) => {
+    if (![COURSE_INTERACTIONS.CHOOSEN, COURSE_INTERACTIONS.TEXT_INPUT].includes(message.type)) {
+      return cb()
+    }
+
+    setCurrentType(message.type)
+    setCurrentMessage(message)
+    setAwaitedMessages(otherMessages)
+    message.type === COURSE_INTERACTIONS.CHOOSEN && setRespnseOptions(message.options)
+  }, [setCurrentType, setAwaitedMessages, setCurrentMessage, setRespnseOptions])
+
+  const handleSetMessages = useCallback((
+    messages: IMessage[],
+    userAnswers: any[] = [],
+    messagesHistory: any[] = [],
+  ) => {
     if (!messages.length) return
 
     if (!(userAnswers.length && messagesHistory.length)) {
@@ -48,14 +67,36 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
         const [message, ...otherMessages] = messages
 
         setMessages(state => [...state, message])
-        handleSetMessages(otherMessages, userAnswers, messagesHistory)
+        handleShowAnswerQuestions(message, () => handleSetMessages(otherMessages), otherMessages)
       }, 1000)
     }
-  }, [])
+  }, [handleShowAnswerQuestions, setMessages])
+
+  const onSelectOption = useCallback((optionId) => {
+    // awaitedMessages
+    const { currentAnswer, additionalContent } = currentMessage || {}
+    const selectedOption: IMessage | any = responseOptions.find(({ id }) => id === optionId)
+
+    selectedOption && setMessages(state => [...state, { type: 'TEXT', author: 'ME', ...selectedOption }])
+    selectedOption && setRespnseOptions([])
+    selectedOption && setCurrentType('')
+
+    if (selectedOption && currentAnswer !== selectedOption.id) {
+      const payload = [
+        ...additionalContent,
+        currentMessage,
+        ...awaitedMessages,
+      ]
+
+      handleSetMessages(payload)
+      return
+    }
+
+    selectedOption && handleSetMessages(awaitedMessages)
+  }, [awaitedMessages, currentMessage, handleSetMessages, setMessages, responseOptions])
 
   useEffect(() => {
     handleSetMessages(flatMessages, userAnswers || [], messagesHistory || [])
-
   }, [flatMessages, userAnswers, messagesHistory, handleSetMessages])
 
   useEffect(() => {
@@ -68,7 +109,7 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
       <ScrollContainer ref={scrollRef} px={4} flex={1}>
         {messages && <MessageGroup messages={messages} author={{...author, type: 'AUTHOR'}} />}
       </ScrollContainer>
-      <ChatInteraction px={4} />
+      <ChatInteraction px={4} buttons={responseOptions} type={currentType} onSelect={onSelectOption} />
     </Box>
   )
 }

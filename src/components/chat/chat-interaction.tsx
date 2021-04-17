@@ -7,18 +7,13 @@ import { TextInput } from '~/primitives/text-input'
 import { Text } from '~/primitives/text'
 import { Icon } from '~/primitives/icon'
 import { Touchable } from '~/primitives/touchable'
-
-type Buttons = {
-  key: string
-  text: string
-  color?: string
-}
+import { IMessageOptions } from '~/interfaces/ICourse'
 
 type Props = {
   onChangeText?: (value: string) => void
-  onSelect?: (key: string) => void
+  onSelect?: (key: number | string) => void
   onSend?: () => void
-  buttons?: Buttons[]
+  buttons?: IMessageOptions[]
   type?: string
 } & BoxProps
 
@@ -34,15 +29,18 @@ export const ChatInteraction = ({
     <Container {...boxProps}>
       <Box flex={1}>
         {type === COURSE_INTERACTIONS.CHOOSEN && (
-          <>
-            {buttons && buttons.map(({ key, text, color }) => (
+          <ButtonsContainer flex={1} flexDirection="row" flexWrap="wrap">
+            {buttons && buttons.map(({ id, content, color }) => (
               <SelectButton
-                onPress={() => onSelect(key)}
-                key={key}
+                onPress={() => onSelect(id)}
+                key={id}
                 color="contrast"
-                {...(color && { style: { backgroundColor: color } })}>{text}</SelectButton>
+                fontSize={14}
+                weight="700"
+                m="5px"
+                {...(color && { style: { backgroundColor: color } })}>{content}</SelectButton>
             ))}
-          </>
+          </ButtonsContainer>
         )}
         {type === COURSE_INTERACTIONS.TEXT_INPUT && (
           <Box>
@@ -76,8 +74,14 @@ const Container = styled(Box)`
   align-items: center;
 `
 
+const ButtonsContainer = styled(Box)`
+  margin: -5px;
+`
+
 const SelectButton = styled(Button)`
-  padding: 10.5px 30.5px;
+  padding: 10.5px 30.5px !important;
+  width: auto !important;
+  background-color: ${p => p.theme.colors.orange};
 `
 
 const ChatSendButton = styled(Touchable)`

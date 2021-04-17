@@ -14,6 +14,7 @@ export type IMessageAdditionalContent = any
 export type IMessageOptions = {
   id: number
   content: string
+  color?: string
 }
 
 export type IMessageChoosenType = {

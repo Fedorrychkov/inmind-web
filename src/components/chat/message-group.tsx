@@ -7,12 +7,12 @@ import { styled } from '~/theming/styled'
 
 type Props = {
   messages: IMessage[] | any
-  author?: IAuthor & { type: 'AUTHOR' | 'PERSON' }
+  author?: IAuthor & { type: 'AUTHOR' | 'PERSON' | 'ME' }
 }
 
 type messageGroup = {
   messages: IMessage[] | any
-  authorType: 'AUTHOR' | 'PERSON'
+  authorType: 'AUTHOR' | 'PERSON' | 'ME'
 }
 
 export const MessageGroup = ({
@@ -66,7 +66,13 @@ export const MessageGroup = ({
     <>
       {messageGroups.map(({ messages, authorType }: messageGroup, index: number) => (
         <Box key={index} flexDirection={authorType === 'AUTHOR' ? 'row' : 'row-reverse'} alignItems="flex-end">
-          <AvatarContainer position="sticky" bottom={11}>
+          <AvatarContainer
+            position="sticky"
+            bottom={11}
+            ml={authorType === 'ME' ? 11 : 0}
+            mb={11}
+            mr={authorType === 'ME' ? 0 : 14}
+          >
             <Icon type={authorType === 'AUTHOR' ? 'author' : 'person-man'} width={58} height={58} />
           </AvatarContainer>
           <Box>
@@ -100,8 +106,6 @@ const AvatarContainer = styled(Box)`
   width: 58px;
   height: 58px;
   overflow: hidden;
-  margin-bottom: 11px;
-  margin-right: 14px;
 `
 
 const MessageContainer = styled(Box)`
