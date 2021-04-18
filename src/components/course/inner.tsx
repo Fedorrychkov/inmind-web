@@ -73,18 +73,15 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   }, [handleShowAnswerQuestions, setMessages])
 
   const onSelectOption = useCallback((optionId) => {
-    // awaitedMessages
-    const { currentAnswer, additionalContent } = currentMessage || {}
     const selectedOption: IMessage | any = responseOptions.find(({ id }) => id === optionId)
 
     selectedOption && setMessages(state => [...state, { type: 'TEXT', author: 'ME', ...selectedOption }])
     selectedOption && setRespnseOptions([])
     selectedOption && setCurrentType('')
 
-    if (selectedOption && currentAnswer !== selectedOption.id) {
+    if (selectedOption && selectedOption.messages && selectedOption.messages.length) {
       const payload = [
-        ...additionalContent,
-        currentMessage,
+        ...selectedOption.messages,
         ...awaitedMessages,
       ]
 
@@ -93,7 +90,7 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     }
 
     selectedOption && handleSetMessages(awaitedMessages)
-  }, [awaitedMessages, currentMessage, handleSetMessages, setMessages, responseOptions])
+  }, [awaitedMessages, handleSetMessages, setMessages, responseOptions])
 
   useEffect(() => {
     handleSetMessages(flatMessages, userAnswers || [], messagesHistory || [])

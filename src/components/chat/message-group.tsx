@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { IAuthor, IMessage } from '~/interfaces/ICourse'
 import { Box } from '~/primitives/box'
 import { Icon } from '~/primitives/icon'
@@ -65,7 +65,11 @@ export const MessageGroup = ({
   return (
     <>
       {messageGroups.map(({ messages, authorType }: messageGroup, index: number) => (
-        <Box key={index} flexDirection={authorType === 'AUTHOR' ? 'row' : 'row-reverse'} alignItems="flex-end">
+        <Box
+          key={index}
+          flexDirection={authorType === 'ME' ? 'row-reverse' : 'row'}
+          alignItems="flex-end"
+        >
           <AvatarContainer
             position="sticky"
             bottom={11}
@@ -73,10 +77,15 @@ export const MessageGroup = ({
             mb={11}
             mr={authorType === 'ME' ? 0 : 14}
           >
-            <Icon type={authorType === 'AUTHOR' ? 'author' : 'person-man'} width={58} height={58} />
+            <Icon type={authorType === 'ME' ? 'person-man' : 'author'} width={58} height={58} />
           </AvatarContainer>
-          <Box>
-            {messages.map((message: IMessage) => <Message key={message.id} message={message} />)}
+          <Box flex={1}
+            display="flex"
+            alignItems={authorType === 'ME' ? 'flex-end' : 'flex-start'}
+          >
+            {messages.map((message: IMessage) => (
+              <Message key={message.id} message={message} authorType={authorType} />
+            ))}
           </Box>
         </Box>
       ))}
@@ -86,14 +95,27 @@ export const MessageGroup = ({
 
 export const Message = ({
   message,
-}: { message: IMessage }) => {
-  const { content, color } = message
+}: { message: IMessage, authorType: string }) => {
+  const { content, type, color } = message
+
+  const renderMessage = useCallback(() => {
+    switch (type) {
+      case 'IMG_URL':
+        return (
+          <img src={content} alt="" />
+        )
+      default:
+        return (
+          <Text fontSize={16} weight="medium">
+            {content}
+          </Text>
+        )
+    }
+  }, [content, type])
 
   return (
     <MessageContainer {...(color && { style: { backgroundColor: color } })}>
-      <Text fontSize={16} weight="medium">
-        {content}
-      </Text>
+      {renderMessage()}
     </MessageContainer>
   )
 }
@@ -117,4 +139,6 @@ const MessageContainer = styled(Box)`
   min-height: 58px;
   display: flex;
   justify-content: center;
+  white-space: pre-wrap;
+  width: fit-content;
 `

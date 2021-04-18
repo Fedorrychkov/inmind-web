@@ -1,5 +1,5 @@
 import { IChapter, IMessage } from '~/interfaces/ICourse'
-import course from '../courses-data/communications.json'
+import { CommunicationCourse } from '../courses-data/communications'
 
 export const getCourses = () => {
 
@@ -7,7 +7,7 @@ export const getCourses = () => {
 
 export const getCourseById = (id: number) => {
   console.info(id)
-  return course.data
+  return CommunicationCourse.data
 }
 
 export const getMessagesFromChapters = (chapters: IChapter[]): IMessage[] => {

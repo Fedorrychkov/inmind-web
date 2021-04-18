@@ -5,34 +5,28 @@ export interface IAuthor {
   type?: 'AUTHOR' | 'PERSON'
 }
 
-export type IMessageWithAdditionalType = {
-  incorrectType?: 'WITH_ADDITIONAL_CONTENT',
-}
-
-export type IMessageAdditionalContent = any
-
 export type IMessageOptions = {
   id: number
   content: string
   color?: string
+  messages: IMessage[]
 }
 
 export type IMessageChoosenType = {
   type: 'CHOOSEN'
   content: string
   currentAnswer: number
-  additionalContent: IMessageAdditionalContent[]
   options: IMessageOptions[]
 }
 
 export type IMessageTextType = {
-  type: 'TEXT'
+  type: 'TEXT' | 'IMG_URL'
   content: string
 }
 
 export type IMessage = {
   id?: number
-  type: 'TEXT' | 'CHOOSEN'
+  type: 'TEXT' | 'CHOOSEN' | 'TEST' | 'IMG_URL'
   content: string
   color?: string
 } & (IMessageTextType | IMessageChoosenType)
