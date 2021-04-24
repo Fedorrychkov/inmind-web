@@ -1,4 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { ChatInteraction } from '../chat/chat-interaction'
+import { MessageGroup } from '../chat/message-group'
+import { CourseHeader } from './header'
 import { useWrappedRef } from '~/hooks/use-ref'
 import { IMessage } from '~/interfaces/ICourse'
 import { Box, BoxProps } from '~/primitives/box'
@@ -12,9 +15,7 @@ import {
 } from '~/services/courses'
 import { COURSE_INTERACTIONS } from '~/constants/course-interaction-types'
 import { styled } from '~/theming/styled'
-import { ChatInteraction } from '../chat/chat-interaction'
-import { MessageGroup } from '../chat/message-group'
-import { CourseHeader } from './header'
+import { ITestQuestion } from '~/interfaces/ICourse'
 
 type Props = {
   course: any
@@ -42,18 +43,32 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     message.type === COURSE_INTERACTIONS.CHOOSEN && setRespnseOptions(message.options)
   }, [setCurrentType, setAwaitedMessages, setCurrentMessage, setRespnseOptions])
 
-  const handleSetMessages = useCallback((
-    currMessages: IMessage[],
-  ) => {
+  const handleSetMessages = useCallback((currMessages: IMessage[]) => {
     if (!currMessages.length) return
+
     setTimeout(() => {
       const [message, ...otherMessages] = currMessages
+      console.log(message)
 
-      setMessages(state => {
-        setCourseHistoriesByCourse(course, [...state, message])
-        return [...state, message]
-      })
-      handleShowAnswerQuestions(message, () => handleSetMessages(otherMessages), otherMessages)
+      if (message.type === 'TEST') {
+        const { questions } = message
+        const [question, ...otherQuestions] = questions || []
+        const computedMessages = [...otherQuestions, ...otherMessages]
+
+        setMessages(state => {
+          setCourseHistoriesByCourse(course, [...state, question])
+
+          return [...state, question]
+        })
+        handleShowAnswerQuestions(question, () => handleSetMessages(computedMessages), computedMessages)
+      } else {
+        setMessages(state => {
+          setCourseHistoriesByCourse(course, [...state, message])
+
+          return [...state, message]
+        })
+        handleShowAnswerQuestions(message, () => handleSetMessages(otherMessages), otherMessages)
+      }
     }, 1000)
   }, [handleShowAnswerQuestions, setMessages, course])
 
@@ -66,13 +81,24 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
 
     if (selectedOption) {
       const lastMessage = messages[messages.length - 1]
+      const count = (lastMessage as ITestQuestion).count
 
-      setCourseAnswers(id, { id: selectedOption.id, messageId: lastMessage.id })
+      setCourseAnswers(id, { id: selectedOption.id, messageId: lastMessage.id, count })
     }
 
     if (selectedOption && selectedOption.messages && selectedOption.messages.length) {
       const payload = [
         ...selectedOption.messages,
+        ...awaitedMessages,
+      ]
+
+      handleSetMessages(payload)
+      return
+    }
+
+    if (selectedOption && selectedOption?.questions?.length) {
+      const payload = [
+        ...selectedOption.questions,
         ...awaitedMessages,
       ]
 

@@ -225,6 +225,7 @@ user_name, доброе утро!
           },
           {
             'type': 'TEST',
+            'id': 'TEST-1',
             'questions': [
               {
                 'type': 'CHOOSEN',

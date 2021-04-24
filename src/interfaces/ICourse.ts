@@ -8,15 +8,25 @@ export interface IAuthor {
 export type IMessageOptions = {
   id: number
   content: string
-  color?: string
   messages: IMessage[]
+  color?: string
 }
 
 export type IMessageChoosenType = {
   type: 'CHOOSEN'
   content: string
-  currentAnswer: number
   options: IMessageOptions[]
+}
+
+export type ITestQuestion = IMessageChoosenType & {
+  count?: number
+}
+
+export type ITestType = {
+  type: 'TEST'
+  id: string
+  questions: ITestQuestion[]
+  content?: string
 }
 
 export type IMessageTextType = {
@@ -24,12 +34,12 @@ export type IMessageTextType = {
   content: string
 }
 
+type SomeTypedMessage = IMessageTextType | IMessageChoosenType | ITestType
+
 export type IMessage = {
   id?: number
-  type: 'TEXT' | 'CHOOSEN' | 'TEST' | 'IMG_URL'
-  content: string
   color?: string
-} & (IMessageTextType | IMessageChoosenType)
+} & SomeTypedMessage
 
 export interface IChapter {
   id: number
