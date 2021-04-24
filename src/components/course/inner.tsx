@@ -1,9 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { MESSAGES_HISOTRY_KEY, USER_ANSWERS_KEY } from '~/constants/storage-keys'
 import { useWrappedRef } from '~/hooks/use-ref'
 import { IMessage } from '~/interfaces/ICourse'
 import { Box, BoxProps } from '~/primitives/box'
-import { getMessagesFromChapters } from '~/services/courses'
+import {
+  getCourseAnswers,
+  getCourseHistory,
+  getMessagesFromChapters,
+  getRemainingMessages,
+  setCourseAnswers,
+  setCourseHistoriesByCourse,
+} from '~/services/courses'
 import { COURSE_INTERACTIONS } from '~/constants/course-interaction-types'
 import { styled } from '~/theming/styled'
 import { ChatInteraction } from '../chat/chat-interaction'
@@ -15,7 +21,7 @@ type Props = {
 } & BoxProps
 
 export const CourseInner = ({ course, ...boxProps }: Props) => {
-  const { name, author } = course
+  const { name, author, id } = course
   const scrollRef = useWrappedRef()
   const [messages, setMessages] = useState<IMessage[]>([])
   const [currentMessage, setCurrentMessage] = useState<IMessage | any>({})
@@ -24,24 +30,6 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   const [awaitedMessages, setAwaitedMessages] = useState<IMessage[]>([])
   const [responseOptions, setRespnseOptions] = useState([])
   const [messagesHistory, setMessagesHistory] = useState([])
-
-  useEffect(() => {
-    const answers = localStorage.getItem(USER_ANSWERS_KEY)
-    const history = localStorage.getItem(MESSAGES_HISOTRY_KEY)
-
-    try {
-      answers && setUserAnswers(JSON.parse(answers))
-      history && setMessagesHistory(JSON.parse(history))
-    } catch (ex) {
-      console.error(ex)
-    }
-  }, [])
-
-  const flatMessages = useMemo(() => {
-    const flattedMessages = getMessagesFromChapters(course.chapters)
-
-    return flattedMessages
-  }, [course])
 
   const handleShowAnswerQuestions = useCallback((message, cb = () => {}, otherMessages: IMessage[]) => {
     if (![COURSE_INTERACTIONS.CHOOSEN, COURSE_INTERACTIONS.TEXT_INPUT].includes(message.type)) {
@@ -55,22 +43,19 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   }, [setCurrentType, setAwaitedMessages, setCurrentMessage, setRespnseOptions])
 
   const handleSetMessages = useCallback((
-    messages: IMessage[],
-    userAnswers: any[] = [],
-    messagesHistory: any[] = [],
+    currMessages: IMessage[],
   ) => {
-    if (!messages.length) return
+    if (!currMessages.length) return
+    setTimeout(() => {
+      const [message, ...otherMessages] = currMessages
 
-    if (!(userAnswers.length && messagesHistory.length)) {
-      console.log(messages, userAnswers, messagesHistory)
-      setTimeout(() => {
-        const [message, ...otherMessages] = messages
-
-        setMessages(state => [...state, message])
-        handleShowAnswerQuestions(message, () => handleSetMessages(otherMessages), otherMessages)
-      }, 1000)
-    }
-  }, [handleShowAnswerQuestions, setMessages])
+      setMessages(state => {
+        setCourseHistoriesByCourse(course, [...state, message])
+        return [...state, message]
+      })
+      handleShowAnswerQuestions(message, () => handleSetMessages(otherMessages), otherMessages)
+    }, 1000)
+  }, [handleShowAnswerQuestions, setMessages, course])
 
   const onSelectOption = useCallback((optionId) => {
     const selectedOption: IMessage | any = responseOptions.find(({ id }) => id === optionId)
@@ -78,6 +63,12 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     selectedOption && setMessages(state => [...state, { type: 'TEXT', author: 'ME', ...selectedOption }])
     selectedOption && setRespnseOptions([])
     selectedOption && setCurrentType('')
+
+    if (selectedOption) {
+      const lastMessage = messages[messages.length - 1]
+
+      setCourseAnswers(id, { id: selectedOption.id, messageId: lastMessage.id })
+    }
 
     if (selectedOption && selectedOption.messages && selectedOption.messages.length) {
       const payload = [
@@ -90,11 +81,30 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     }
 
     selectedOption && handleSetMessages(awaitedMessages)
-  }, [awaitedMessages, handleSetMessages, setMessages, responseOptions])
+  }, [id, awaitedMessages, responseOptions, messages, handleSetMessages, setMessages])
+
+  const flatMessages = useMemo(() => {
+    const flattedMessages = getMessagesFromChapters(course.chapters)
+
+    return flattedMessages
+  }, [course])
 
   useEffect(() => {
-    handleSetMessages(flatMessages, userAnswers || [], messagesHistory || [])
-  }, [flatMessages, userAnswers, messagesHistory, handleSetMessages])
+    const answers = getCourseAnswers(id)
+    const { messagesHistory } = getCourseHistory(id)
+
+    try {
+      answers && setUserAnswers(answers || [])
+      messagesHistory && setMessagesHistory(messagesHistory || [])
+
+      const remainingMessages = getRemainingMessages(flatMessages, messagesHistory || [])
+      setMessages(messagesHistory || [])
+      handleSetMessages(remainingMessages)
+    } catch (ex) {
+      console.error(ex)
+      handleSetMessages(flatMessages)
+    }
+  }, [id, flatMessages, handleSetMessages, setMessages])
 
   useEffect(() => {
     messages.length && scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight)

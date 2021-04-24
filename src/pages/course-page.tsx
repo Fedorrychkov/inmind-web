@@ -33,12 +33,6 @@ export const CoursePage = () => {
     author,
   }), [name, description, author])
 
-  useEffect(() => {
-    // TODO: Get all messages from course with flat list (without progress bar in chat header)
-    // TODO: Set chat history to localstorage?
-    // TODO: Need to create simple chat flow with simple buttons
-  }, [currentCourse])
-
   const onStart = useCallback(() => {
     setOnboarding(false)
   }, [])

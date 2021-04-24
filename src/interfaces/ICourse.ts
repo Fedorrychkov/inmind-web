@@ -40,6 +40,7 @@ export interface IChapter {
 export  interface ICourse {
   id: number
   name: string
+  version: string
   description: string
   author: IAuthor
   chapters: IChapter[]
