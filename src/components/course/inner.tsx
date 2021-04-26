@@ -3,7 +3,7 @@ import { ChatInteraction } from '../chat/chat-interaction'
 import { MessageGroup } from '../chat/message-group'
 import { CourseHeader } from './header'
 import { useWrappedRef } from '~/hooks/use-ref'
-import { IMessage } from '~/interfaces/ICourse'
+import { IMessage, ITestResult } from '~/interfaces/ICourse'
 import { Box, BoxProps } from '~/primitives/box'
 import {
   getCourseAnswers,
@@ -29,8 +29,12 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   const [userAnswers, setUserAnswers] = useState([])
   const [currentType, setCurrentType] = useState('')
   const [awaitedMessages, setAwaitedMessages] = useState<IMessage[]>([])
-  const [responseOptions, setRespnseOptions] = useState([])
+  const [responseOptions, setResponseOptions] = useState([])
   const [messagesHistory, setMessagesHistory] = useState([])
+  const [currentTestResults, setCurrentTestResults] = useState<ITestResult[] | null>([])
+  const [currentTestValue, setCurrentTestValue] = useState(0)
+  const [currentTestId, setCurrentTestId] = useState('')
+  const [inited, setInited] = useState(false)
 
   const handleShowAnswerQuestions = useCallback((message, cb = () => {}, otherMessages: IMessage[]) => {
     if (![COURSE_INTERACTIONS.CHOOSEN, COURSE_INTERACTIONS.TEXT_INPUT].includes(message.type)) {
@@ -40,21 +44,60 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     setCurrentType(message.type)
     setCurrentMessage(message)
     setAwaitedMessages(otherMessages)
-    message.type === COURSE_INTERACTIONS.CHOOSEN && setRespnseOptions(message.options)
-  }, [setCurrentType, setAwaitedMessages, setCurrentMessage, setRespnseOptions])
+    message.type === COURSE_INTERACTIONS.CHOOSEN && setResponseOptions(message.options)
+  }, [setCurrentType, setAwaitedMessages, setCurrentMessage, setResponseOptions])
+
+  const getCurrentTestResult = useCallback(() => {
+    const result = currentTestResults?.find((result) => {
+      const { min, max } = result.count
+
+      if ((min !== undefined ? currentTestValue > min : true) && (max !== undefined ? currentTestValue <= max : true)) {
+        return result
+      }
+
+      return false
+    })
+
+    if (!result) return undefined
+
+    const { type, content, options } = result
+
+    return { id: `${currentTestId}-result`, isResult: true, type, content, options }
+  }, [currentTestId, currentTestValue, currentTestResults])
+
+  const prepareGetCourseResult = useCallback((messages) => {
+    const hasCurrentTestMessages = messages.reduce((acc: number, message: IMessage) =>
+      currentTestId === message.testId ? acc + 1 : acc, 0)
+    const currentResultMessage = getCurrentTestResult()
+    const computedMessage = currentResultMessage ? [currentResultMessage, ...messages] : messages
+
+    if (hasCurrentTestMessages === 1) {
+      const [message, ...otherMessages] = messages
+
+      return currentResultMessage ? [message, currentResultMessage, ...otherMessages] : messages
+    }
+
+    return !!hasCurrentTestMessages ? messages : computedMessage
+  }, [currentTestId, getCurrentTestResult])
 
   const handleSetMessages = useCallback((currMessages: IMessage[]) => {
     if (!currMessages.length) return
 
     setTimeout(() => {
       const [message, ...otherMessages] = currMessages
-      console.log(message)
 
       if (message.type === 'TEST') {
-        const { questions } = message
-        const [question, ...otherQuestions] = questions || []
+        const { questions, results } = message
+        const parsedQuestions = questions.map((question, index: number) => ({ ...question, id: `${message.id}-${index}`, testId: message.id }))
+        const [question, ...otherQuestions] = parsedQuestions || []
         const computedMessages = [...otherQuestions, ...otherMessages]
 
+        // TODO: Нужно создать метод и отдельный проперти для хранения тестов,
+        // TODO: с флагами: тест окончен и тд, считать локально, а хранить в локалсторедже
+        // TODO: Нужно добавить кеширование ответов в локалсторедже и пофиксить после перезапуска сразу после конца
+        // TODO: теста
+        setCurrentTestResults(results || [])
+        setCurrentTestId(message.id)
         setMessages(state => {
           setCourseHistoriesByCourse(course, [...state, question])
 
@@ -62,28 +105,39 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
         })
         handleShowAnswerQuestions(question, () => handleSetMessages(computedMessages), computedMessages)
       } else {
-        setMessages(state => {
-          setCourseHistoriesByCourse(course, [...state, message])
+        const [currentMessage, ...someNextMessages] = message.testId ?
+          prepareGetCourseResult([message, ...otherMessages]) : [message, ...otherMessages]
 
-          return [...state, message]
+        setMessages(state => {
+          setCourseHistoriesByCourse(course, [...state, currentMessage])
+
+          if (currentMessage.isResult) {
+            setCurrentTestValue(0)
+            setCurrentTestId('')
+            setCurrentTestResults([])
+          }
+
+          return [...state, currentMessage]
         })
-        handleShowAnswerQuestions(message, () => handleSetMessages(otherMessages), otherMessages)
+        handleShowAnswerQuestions(currentMessage, () => handleSetMessages(someNextMessages), someNextMessages)
       }
     }, 1000)
-  }, [handleShowAnswerQuestions, setMessages, course])
+  }, [handleShowAnswerQuestions, setMessages, setCurrentTestResults, prepareGetCourseResult, course])
 
   const onSelectOption = useCallback((optionId) => {
     const selectedOption: IMessage | any = responseOptions.find(({ id }) => id === optionId)
 
     selectedOption && setMessages(state => [...state, { type: 'TEXT', author: 'ME', ...selectedOption }])
-    selectedOption && setRespnseOptions([])
+    selectedOption && setResponseOptions([])
     selectedOption && setCurrentType('')
 
     if (selectedOption) {
       const lastMessage = messages[messages.length - 1]
-      const count = (lastMessage as ITestQuestion).count
+      const count = (selectedOption as ITestQuestion).count
+      const testId = (lastMessage as ITestQuestion & { testId: string }).testId
 
-      setCourseAnswers(id, { id: selectedOption.id, messageId: lastMessage.id, count })
+      testId && count && setCurrentTestValue(state => state + count)
+      setCourseAnswers(id, { id: selectedOption.id, messageId: lastMessage.id, count, testId })
     }
 
     if (selectedOption && selectedOption.messages && selectedOption.messages.length) {
@@ -116,6 +170,7 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   }, [course])
 
   useEffect(() => {
+    if (inited) return () => {}
     const answers = getCourseAnswers(id)
     const { messagesHistory } = getCourseHistory(id)
 
@@ -130,7 +185,10 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
       console.error(ex)
       handleSetMessages(flatMessages)
     }
-  }, [id, flatMessages, handleSetMessages, setMessages])
+    setInited(true)
+
+    return () => {}
+  }, [inited, id, flatMessages, handleSetMessages, setMessages])
 
   useEffect(() => {
     messages.length && scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight)

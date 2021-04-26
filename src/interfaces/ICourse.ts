@@ -22,11 +22,22 @@ export type ITestQuestion = IMessageChoosenType & {
   count?: number
 }
 
+export type ITestResult = {
+  type: 'TEXT'
+  count: {
+    min?: number
+    max?: number
+  }
+  content?: string
+  options: IMessageOptions[]
+}
+
 export type ITestType = {
   type: 'TEST'
   id: string
   questions: ITestQuestion[]
   content?: string
+  results?: ITestResult[]
 }
 
 export type IMessageTextType = {
@@ -37,7 +48,8 @@ export type IMessageTextType = {
 type SomeTypedMessage = IMessageTextType | IMessageChoosenType | ITestType
 
 export type IMessage = {
-  id?: number
+  id?: string | number
+  testId?: string
   color?: string
 } & SomeTypedMessage
 
