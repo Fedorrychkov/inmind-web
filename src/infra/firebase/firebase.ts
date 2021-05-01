@@ -1,7 +1,6 @@
 import firebase from 'firebase'
-import 'firebase/firestore'
 
-export const initFirebase = () => {
+export const initFirebaseApp = () => {
   const firebaseConfig = {
     apiKey: 'AIzaSyC9kqDYj3F-hAHjyo2PF4Fbtb_LLG4gDRU',
     authDomain: 'inmind-web.firebaseapp.com',

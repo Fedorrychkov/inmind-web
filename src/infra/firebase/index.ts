@@ -1,1 +1,1 @@
-export { initFirebase } from './firebase'
+export { initFirebaseApp } from './firebase'

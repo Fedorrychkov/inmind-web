@@ -1,3 +1,4 @@
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
@@ -8,9 +9,9 @@ import { store } from './store'
 import { GlobalStyle } from './theming/global'
 import { ThemeProvider } from './theming/provider'
 import { snowTheme } from './theming/snow'
-import { initFirebase } from './infra/firebase'
+import { initFirebaseApp } from './infra/firebase'
 
-initFirebase()
+initFirebaseApp()
 
 ReactDOM.render(
   <React.StrictMode>
