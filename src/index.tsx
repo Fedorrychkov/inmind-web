@@ -8,6 +8,9 @@ import { store } from './store'
 import { GlobalStyle } from './theming/global'
 import { ThemeProvider } from './theming/provider'
 import { snowTheme } from './theming/snow'
+import { initFirebase } from './infra/firebase'
+
+initFirebase()
 
 ReactDOM.render(
   <React.StrictMode>
