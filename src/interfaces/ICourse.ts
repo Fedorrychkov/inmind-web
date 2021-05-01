@@ -5,6 +5,8 @@ export interface IAuthor {
   type?: 'AUTHOR' | 'PERSON'
 }
 
+export type Author = 'ME' | 'PERSON' | 'AUTHOR'
+
 export type IMessageOptions = {
   id: number
   content: string
@@ -30,6 +32,7 @@ export type ITestResult = {
   }
   content?: string
   options: IMessageOptions[]
+  messages: IMessage[]
 }
 
 export type ITestType = {
@@ -51,6 +54,7 @@ export type IMessage = {
   id?: string | number
   testId?: string
   color?: string
+  author?: Author
 } & SomeTypedMessage
 
 export interface IChapter {
@@ -59,7 +63,7 @@ export interface IChapter {
   messages: IMessage[]
 }
 
-export  interface ICourse {
+export interface ICourse {
   id: number
   name: string
   version: string

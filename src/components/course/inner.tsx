@@ -8,6 +8,9 @@ import { Box, BoxProps } from '~/primitives/box'
 import {
   getCourseAnswers,
   getCourseHistory,
+  getCurrentTestByHistory,
+  getCurrentTestByMessage,
+  getCurrentTestValue,
   getMessagesFromChapters,
   getRemainingMessages,
   setCourseAnswers,
@@ -25,16 +28,19 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   const { name, author, id } = course
   const scrollRef = useWrappedRef()
   const [messages, setMessages] = useState<IMessage[]>([])
-  const [currentMessage, setCurrentMessage] = useState<IMessage | any>({})
-  const [userAnswers, setUserAnswers] = useState([])
   const [currentType, setCurrentType] = useState('')
   const [awaitedMessages, setAwaitedMessages] = useState<IMessage[]>([])
   const [responseOptions, setResponseOptions] = useState([])
-  const [messagesHistory, setMessagesHistory] = useState([])
-  const [currentTestResults, setCurrentTestResults] = useState<ITestResult[] | null>([])
+  const [currentTestResults, setCurrentTestResults] = useState<ITestResult[] | undefined>([])
   const [currentTestValue, setCurrentTestValue] = useState(0)
   const [currentTestId, setCurrentTestId] = useState('')
   const [inited, setInited] = useState(false)
+
+  const flatMessages = useMemo(() => {
+    const flattedMessages = getMessagesFromChapters(course.chapters)
+
+    return flattedMessages
+  }, [course])
 
   const handleShowAnswerQuestions = useCallback((message, cb = () => {}, otherMessages: IMessage[]) => {
     if (![COURSE_INTERACTIONS.CHOOSEN, COURSE_INTERACTIONS.TEXT_INPUT].includes(message.type)) {
@@ -42,12 +48,11 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     }
 
     setCurrentType(message.type)
-    setCurrentMessage(message)
     setAwaitedMessages(otherMessages)
     message.type === COURSE_INTERACTIONS.CHOOSEN && setResponseOptions(message.options)
-  }, [setCurrentType, setAwaitedMessages, setCurrentMessage, setResponseOptions])
+  }, [setCurrentType, setAwaitedMessages, setResponseOptions])
 
-  const getCurrentTestResult = useCallback(() => {
+  const currentResultMessage = useMemo(() => {
     const result = currentTestResults?.find((result) => {
       const { min, max } = result.count
 
@@ -60,69 +65,78 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
 
     if (!result) return undefined
 
-    const { type, content, options } = result
+    const { type, content, options, messages } = result
 
-    return { id: `${currentTestId}-result`, isResult: true, type, content, options }
+    return { id: `${currentTestId}-result`, isResult: true, type, content, options, messages }
   }, [currentTestId, currentTestValue, currentTestResults])
 
-  const prepareGetCourseResult = useCallback((messages) => {
-    const hasCurrentTestMessages = messages.reduce((acc: number, message: IMessage) =>
-      currentTestId === message.testId ? acc + 1 : acc, 0)
-    const currentResultMessage = getCurrentTestResult()
-    const computedMessage = currentResultMessage ? [currentResultMessage, ...messages] : messages
+  const prepareGetCourseResultOrMessage = useCallback((nextMessages, beforeNextMessages) => {
+    const [message] = nextMessages
+    const lastMessages = beforeNextMessages ? beforeNextMessages.filter((message: IMessage) => message.author !== 'ME') : undefined
+    const lastMessage = lastMessages ? lastMessages[lastMessages.length - 1] : undefined
 
-    if (hasCurrentTestMessages === 1) {
-      const [message, ...otherMessages] = messages
+    const messagesFromResult = currentResultMessage ?
+      [currentResultMessage, ...currentResultMessage.messages] : []
 
-      return currentResultMessage ? [message, currentResultMessage, ...otherMessages] : messages
+    if (lastMessage && lastMessage.testId && !message.testId) {
+      return currentResultMessage ? [...messagesFromResult, ...nextMessages] : nextMessages
     }
 
-    return !!hasCurrentTestMessages ? messages : computedMessage
-  }, [currentTestId, getCurrentTestResult])
+    return nextMessages
+  }, [currentResultMessage])
 
-  const handleSetMessages = useCallback((currMessages: IMessage[]) => {
+  const handleSetMessages = useCallback((currMessages: IMessage[], beforeNextMessages: IMessage[]) => {
     if (!currMessages.length) return
 
     setTimeout(() => {
       const [message, ...otherMessages] = currMessages
+      const [currentMessage, ...someNextMessages] =
+        prepareGetCourseResultOrMessage([message, ...otherMessages], beforeNextMessages)
 
-      if (message.type === 'TEST') {
-        const { questions, results } = message
-        const parsedQuestions = questions.map((question, index: number) => ({ ...question, id: `${message.id}-${index}`, testId: message.id }))
-        const [question, ...otherQuestions] = parsedQuestions || []
-        const computedMessages = [...otherQuestions, ...otherMessages]
+      setMessages(state => {
+        setCourseHistoriesByCourse(course, [...state, currentMessage])
 
-        // TODO: Нужно создать метод и отдельный проперти для хранения тестов,
-        // TODO: с флагами: тест окончен и тд, считать локально, а хранить в локалсторедже
-        // TODO: Нужно добавить кеширование ответов в локалсторедже и пофиксить после перезапуска сразу после конца
-        // TODO: теста
-        setCurrentTestResults(results || [])
-        setCurrentTestId(message.id)
-        setMessages(state => {
-          setCourseHistoriesByCourse(course, [...state, question])
+        if (currentMessage.testId && !currentTestId) {
+          const currentTest = getCurrentTestByMessage(flatMessages, currentMessage)
+          currentTest && setCurrentTestId(currentTest.id)
+          currentTest && setCurrentTestResults(currentTest.results)
+        }
 
-          return [...state, question]
-        })
-        handleShowAnswerQuestions(question, () => handleSetMessages(computedMessages), computedMessages)
-      } else {
-        const [currentMessage, ...someNextMessages] = message.testId ?
-          prepareGetCourseResult([message, ...otherMessages]) : [message, ...otherMessages]
+        if (currentMessage.isResult) {
+          setCurrentTestValue(0)
+          setCurrentTestId('')
+          setCurrentTestResults([])
+        }
 
-        setMessages(state => {
-          setCourseHistoriesByCourse(course, [...state, currentMessage])
-
-          if (currentMessage.isResult) {
-            setCurrentTestValue(0)
-            setCurrentTestId('')
-            setCurrentTestResults([])
-          }
-
-          return [...state, currentMessage]
-        })
-        handleShowAnswerQuestions(currentMessage, () => handleSetMessages(someNextMessages), someNextMessages)
-      }
+        return [...state, currentMessage]
+      })
+      handleShowAnswerQuestions(
+        currentMessage,
+        () => handleSetMessages(someNextMessages, [...beforeNextMessages, currentMessage]),
+        someNextMessages,
+      )
     }, 1000)
-  }, [handleShowAnswerQuestions, setMessages, setCurrentTestResults, prepareGetCourseResult, course])
+  }, [
+    course,
+    currentTestId,
+    flatMessages,
+    handleShowAnswerQuestions,
+    setMessages,
+    setCurrentTestResults,
+    prepareGetCourseResultOrMessage,
+  ])
+
+  const handleCheckCurrentTest = useCallback((flatMessages: IMessage[], messagesHistory: IMessage[], userAnswers) => {
+    const currentTest = getCurrentTestByHistory(flatMessages, messagesHistory)
+
+    if (!currentTest || currentTest.type !== 'TEST') return
+
+    const currentTestValue = getCurrentTestValue(currentTest, userAnswers)
+
+    setCurrentTestId(currentTest.id)
+    setCurrentTestResults(currentTest.results)
+    setCurrentTestValue(currentTestValue)
+  }, [])
 
   const onSelectOption = useCallback((optionId) => {
     const selectedOption: IMessage | any = responseOptions.find(({ id }) => id === optionId)
@@ -146,7 +160,7 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
         ...awaitedMessages,
       ]
 
-      handleSetMessages(payload)
+      handleSetMessages(payload, messages)
       return
     }
 
@@ -156,18 +170,12 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
         ...awaitedMessages,
       ]
 
-      handleSetMessages(payload)
+      handleSetMessages(payload, messages)
       return
     }
 
-    selectedOption && handleSetMessages(awaitedMessages)
+    selectedOption && handleSetMessages(awaitedMessages, messages)
   }, [id, awaitedMessages, responseOptions, messages, handleSetMessages, setMessages])
-
-  const flatMessages = useMemo(() => {
-    const flattedMessages = getMessagesFromChapters(course.chapters)
-
-    return flattedMessages
-  }, [course])
 
   useEffect(() => {
     if (inited) return () => {}
@@ -175,20 +183,20 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     const { messagesHistory } = getCourseHistory(id)
 
     try {
-      answers && setUserAnswers(answers || [])
-      messagesHistory && setMessagesHistory(messagesHistory || [])
-
       const remainingMessages = getRemainingMessages(flatMessages, messagesHistory || [])
+
+      handleCheckCurrentTest(flatMessages, messagesHistory || [], answers || [])
       setMessages(messagesHistory || [])
-      handleSetMessages(remainingMessages)
+      handleSetMessages(remainingMessages, messagesHistory || [])
     } catch (ex) {
       console.error(ex)
-      handleSetMessages(flatMessages)
+      handleSetMessages(flatMessages, [])
     }
+
     setInited(true)
 
     return () => {}
-  }, [inited, id, flatMessages, handleSetMessages, setMessages])
+  }, [inited, id, flatMessages, handleSetMessages, setMessages, handleCheckCurrentTest])
 
   useEffect(() => {
     messages.length && scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight)

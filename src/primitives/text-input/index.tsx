@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React from 'react'
 import { transparentize } from 'polished'
 import type { TextInputBaseSharedProps, TextInputProps, TextInputComponent } from './types'
 import { styled } from '~/theming/styled'
@@ -21,27 +21,4 @@ const TextInputBase = styled.input.attrs(mapTestId)<TextInputBaseEnhancedProps>(
   weights.medium as any,
 ) as TextInputComponent
 
-export const TextInput = (props: TextInputProps) => {
-  const [scrollHeight, setScrollHeight] = useState(null)
-
-  const handleContentSize = useCallback((e: any) => {
-    setScrollHeight(e.nativeEvent.contentSize.height)
-  }, [])
-
-  const styles = useMemo(() => {
-    const result = {
-      height: scrollHeight,
-      outline: 'none',
-    }
-
-    return result
-  }, [scrollHeight])
-
-  return (
-    <TextInputBase
-      onContentSizeChange={handleContentSize}
-      style={styles}
-      {...props}
-    />
-  )
-}
+export const TextInput = (props: TextInputProps) => <TextInputBase {...props}/>

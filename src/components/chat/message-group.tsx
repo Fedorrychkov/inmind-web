@@ -83,8 +83,8 @@ export const MessageGroup = ({
             display="flex"
             alignItems={authorType === 'ME' ? 'flex-end' : 'flex-start'}
           >
-            {messages.map((message: IMessage) => (
-              <Message key={message.id} message={message} authorType={authorType} />
+            {messages.map((message: IMessage, index: number) => (
+              <Message key={message.id !== undefined ? message.id : index} message={message} authorType={authorType} />
             ))}
           </Box>
         </Box>

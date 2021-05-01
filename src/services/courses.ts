@@ -1,22 +1,14 @@
 import { COURSE_INTERACTIONS } from '~/constants/course-interaction-types'
 import { MESSAGES_HISOTRY_KEY, USER_ANSWERS_KEY } from '~/constants/storage-keys'
-import { IChapter, ICourse, IMessage } from '~/interfaces/ICourse'
+import { IChapter, ICourse, IMessage, ITestType } from '~/interfaces/ICourse'
 import { CommunicationCourse } from '../courses-data/communications'
 
 type CourseHistory = Pick<ICourse, 'id'> & { messagesHistory: IMessage[] }
-// type CourseContent<T> = {
-//   id: number
-// } & keyof T
-
-// type AnswersCourseContent = {
-//   answers: {
-//     id: string | number
-//     messageId: string | number
-//   }
-// }
-
-export const getCourses = () => {
-
+type UserAnswer = {
+  id?: string | number
+  messageId?: string
+  count?: number
+  testId?: string
 }
 
 export const getCourseContentById = (courseId: number, key: string) => {
@@ -94,11 +86,73 @@ export const setCourseHistoriesByCourse = (course: ICourse, messages: IMessage[]
 }
 
 export const getRemainingMessages = (allMessages: IMessage[], historyMesesages: IMessage[]) => {
-  return allMessages.filter(message => {
+  const openedAllMessages = allMessages
+    .reduce((messages: IMessage[], message: IMessage) => {
+      if (message.type === 'TEST') {
+        const { questions } = message
+        const parsedQuestions = questions.map((question, index: number) =>
+          ({ ...question, id: `${message.id}-${index}`, testId: message.id }),
+        )
+
+        return [...messages, ...parsedQuestions]
+      } else {
+        return [...messages, message]
+      }
+    }, [])
+
+  return openedAllMessages.filter(message => {
     const found = historyMesesages.find(history => history.id === message.id)
 
     return !!found ? false : true
   })
+}
+
+export const getCurrentTestByHistory = (
+  allMessages: IMessage[],
+  historyMesesages: IMessage[],
+): IMessage | undefined => {
+  const allTests = allMessages.filter(message => message.type === 'TEST')
+
+  if (!allTests || !allTests.length) return
+
+  const allQuestionsByTestsInHistory = historyMesesages
+    .filter(message => message.testId)
+    .reduce((tests: Record<string, IMessage[]>, message: IMessage) => {
+      const currentTestId = message.testId
+
+      return currentTestId && tests[currentTestId] ? {
+        ...tests,
+        [currentTestId]: [
+          ...tests[currentTestId],
+          message,
+        ],
+      } : {
+        ...tests,
+        [currentTestId as string]: [message],
+      }
+    }, {})
+
+  const currentTest = allTests.find((test: IMessage) => {
+    if (test.type !== 'TEST') return false
+
+    const currentTestFromHistory = allQuestionsByTestsInHistory[test.id]
+
+    return currentTestFromHistory ? test.questions.length !== currentTestFromHistory.length : false
+  })
+
+  return currentTest
+}
+
+export const getCurrentTestByMessage = (messages: IMessage[], currentMessage: IMessage): ITestType | undefined => {
+  const currentTest = messages.find(message => currentMessage.testId === message.id)
+
+  return currentTest && currentTest.type === 'TEST' ? currentTest : undefined
+}
+
+export const getCurrentTestValue = (currentTest: ITestType, userAnswers: UserAnswer[]) => {
+  return userAnswers
+    .filter(answer => answer.testId === currentTest.id)
+    .reduce((count: number, answer) => answer.count ? count + answer.count : count, 0)
 }
 
 export const setCourseAnswers = (courseId: number, answer: any) => {
@@ -131,7 +185,3 @@ export const getCourseAnswers = (courseId: number) => {
     console.error(ex)
   }
 }
-
-// export const concatMessagesWithUserAnswers = (messages, userAnswers) => {
-//
-// }
