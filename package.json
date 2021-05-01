@@ -2,6 +2,7 @@
   "name": "inmind-courses",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://fedorrychkov.github.io/inmind-web/",
   "scripts": {
     "start": "react-app-rewired start",
     "lint": "eslint . --ext .tsx,.ts",
