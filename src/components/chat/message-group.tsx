@@ -1,8 +1,10 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
+import { CustomModal } from '~/common/modal'
 import { IAuthor, IMessage } from '~/interfaces/ICourse'
 import { Box } from '~/primitives/box'
 import { Icon } from '~/primitives/icon'
 import { Text } from '~/primitives/text'
+import { Touchable } from '~/primitives/touchable'
 import { styled } from '~/theming/styled'
 
 type Props = {
@@ -97,12 +99,18 @@ export const Message = ({
   message,
 }: { message: IMessage, authorType: string }) => {
   const { content, type, color } = message
+  const [modalIsOpen, setIsOpen] = useState(false)
 
-  const renderMessage = useCallback(() => {
+  const closeModal = useCallback(() => setIsOpen(false), [])
+  const openModal = useCallback(() => setIsOpen(true), [])
+
+  const renderMessage = useMemo(() => {
     switch (type) {
       case 'IMG_URL':
         return (
-          <img src={content} alt="" />
+          <Touchable onClick={openModal}>
+            <Img src={content} alt=""/>
+          </Touchable>
         )
       default:
         return (
@@ -111,11 +119,42 @@ export const Message = ({
           </Text>
         )
     }
+  }, [content, type, openModal])
+
+  const renderModalContent = useMemo(() => {
+    switch (type) {
+      // TODO: Добавить видео, думаю его проигрывание будет в попапе,
+      // TODO: ниже уже есть все для попапа, необходимо сделать вывод превью видео и
+      // TODO: проверить работоспособность обновив в курсе IMG_URL на VIDEO_URL, если все ок вернуть IMG URL
+      case 'IMG_URL':
+        return (
+          <Box>
+            <Img src={content} alt="" />
+          </Box>
+        )
+      default:
+        return null
+    }
   }, [content, type])
+
+  const hasModal = useMemo(() => {
+    switch (type) {
+      case 'IMG_URL':
+      case 'VIDEO_URL':
+        return true
+      default:
+        return false
+    }
+  }, [type])
 
   return (
     <MessageContainer {...(color && { style: { backgroundColor: color } })}>
-      {renderMessage()}
+      {renderMessage}
+      {hasModal && (
+        <CustomModal isOpen={modalIsOpen} onRequestClose={closeModal}>
+          {renderModalContent}
+        </CustomModal>
+      )}
     </MessageContainer>
   )
 }
@@ -128,6 +167,10 @@ const AvatarContainer = styled(Box)`
   width: 58px;
   height: 58px;
   overflow: hidden;
+`
+
+const Img = styled.img`
+  width: 100%;
 `
 
 const MessageContainer = styled(Box)`

@@ -44,7 +44,7 @@ export type ITestType = {
 }
 
 export type IMessageTextType = {
-  type: 'TEXT' | 'IMG_URL'
+  type: 'TEXT' | 'IMG_URL' | 'VIDEO_URL'
   content: string
 }
 
