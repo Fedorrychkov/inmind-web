@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/inmind-web/static/css/main.389bd3db.chunk.css",
-    "main.js": "/inmind-web/static/js/main.a609b57e.chunk.js",
-    "main.js.map": "/inmind-web/static/js/main.a609b57e.chunk.js.map",
+    "main.js": "/inmind-web/static/js/main.c8c7cd09.chunk.js",
+    "main.js.map": "/inmind-web/static/js/main.c8c7cd09.chunk.js.map",
     "runtime-main.js": "/inmind-web/static/js/runtime-main.f4b9ad06.js",
     "runtime-main.js.map": "/inmind-web/static/js/runtime-main.f4b9ad06.js.map",
     "static/js/2.1cd3efef.chunk.js": "/inmind-web/static/js/2.1cd3efef.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.f4b9ad06.js",
     "static/js/2.1cd3efef.chunk.js",
     "static/css/main.389bd3db.chunk.css",
-    "static/js/main.a609b57e.chunk.js"
+    "static/js/main.c8c7cd09.chunk.js"
   ]
 }
