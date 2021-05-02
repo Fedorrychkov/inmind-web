@@ -4,12 +4,11 @@ import firebase from 'firebase'
 class AppStore {
   currentUser: User | null = null
 
-  contructor() {
+  constructor() {
     makeAutoObservable(this)
   }
 
   get isAuthenticated() {
-    console.log(this.currentUser !== null)
     return this.currentUser !== null
   }
 
