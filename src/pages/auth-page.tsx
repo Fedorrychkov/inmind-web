@@ -1,12 +1,14 @@
 import React from 'react'
 import FirebaseAuth from 'react-firebaseui/FirebaseAuth'
 import facebookIconUrl from './facebook-signin-provider-icon.svg'
+import { observer } from 'mobx-react-lite'
 
 import { Box } from '~/primitives/box'
 import { Text } from '~/primitives/text'
 import { Container } from '~/primitives/container'
 import { styled } from '~/theming/styled'
 import { getFirebaseAuth, SignInProviders } from '~/infra/firebase/auth'
+import { appStore } from '~/store'
 
 const uiConfig = {
   // Popup signin flow rather than redirect flow.
@@ -29,11 +31,18 @@ const uiConfig = {
   },
 }
 
-export const AuthPage = () => {
+export const AuthPage = observer(() => {
   const firebaseAuth = getFirebaseAuth()
 
-  firebaseAuth.onAuthStateChanged((user) => {
-    console.log(user)
+  firebaseAuth.onAuthStateChanged((authProviderUser) => {
+    const isLoggingOut = authProviderUser === null
+
+    if (isLoggingOut) {
+      appStore.signOut()
+      return
+    }
+
+    appStore.signIn(authProviderUser)
   })
 
   return (
@@ -49,7 +58,7 @@ export const AuthPage = () => {
       </Container>
     </BackgroundContainer>
   )
-}
+})
 
 const BackgroundContainer = styled(Box)`
   background-color: ${p => p.theme.colors.base};
