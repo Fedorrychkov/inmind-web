@@ -8,4 +8,4 @@ export const store = configureStore({
   },
 })
 
-const appStore = new AppStore()
+export const appStore = new AppStore()

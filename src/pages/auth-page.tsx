@@ -42,7 +42,7 @@ export const AuthPage = observer(() => {
       return
     }
 
-    appStore.signIn(authProviderUser)
+    appStore.signInWithFirebase(authProviderUser)
   })
 
   return (
