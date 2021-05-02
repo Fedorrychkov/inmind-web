@@ -2,14 +2,19 @@ import { makeAutoObservable } from 'mobx'
 import { User } from '~/domain/user'
 import firebase from 'firebase'
 class AppStore {
-  currentUser?: User
+  currentUser: User | null = null
 
   contructor() {
     makeAutoObservable(this)
   }
 
+  get isAuthenticated() {
+    console.log(this.currentUser !== null)
+    return this.currentUser !== null
+  }
+
   signOut() {
-    this.currentUser = undefined
+    this.currentUser = null
   }
 
   signInWithFirebase(firebaseUser: firebase.User) {
