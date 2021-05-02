@@ -1,5 +1,7 @@
 import firebase from 'firebase'
 
+export type FirebaseUserType = firebase.User
+
 const getFirebaseAuth = () => firebase.auth()
 
 const SignInProviders = {

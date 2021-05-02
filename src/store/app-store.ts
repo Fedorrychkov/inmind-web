@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 import { User } from '~/domain/user'
 import firebase from 'firebase'
+
 class AppStore {
   currentUser: User | null = null
 
