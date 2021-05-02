@@ -1,12 +1,10 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import FirebaseAuth from 'react-firebaseui/FirebaseAuth'
 import facebookIconUrl from './facebook-signin-provider-icon.svg'
 
 import { Box } from '~/primitives/box'
 import { Text } from '~/primitives/text'
 import { Container } from '~/primitives/container'
-import { IStore } from '~/store/types'
 import { styled } from '~/theming/styled'
 import { getFirebaseAuth, SignInProviders } from '~/infra/firebase/auth'
 
