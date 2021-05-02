@@ -1,7 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { User } from '~/domain/user'
-import firebase from 'firebase'
-
+import { User, IUserProps } from '~/domain/user'
 class AppStore {
   currentUser: User | null = null
 
@@ -17,12 +15,8 @@ class AppStore {
     this.currentUser = null
   }
 
-  signInWithFirebase(firebaseUser: firebase.User) {
-    const user = new User({
-      id: firebaseUser.uid,
-      email: firebaseUser.email,
-      displayName: firebaseUser.displayName,
-    })
+  signIn(userProps: IUserProps) {
+    const user = new User(userProps)
 
     this.currentUser = user
   }

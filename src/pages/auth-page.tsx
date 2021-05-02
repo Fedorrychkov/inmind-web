@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { observer } from 'mobx-react-lite'
 import { Redirect } from 'react-router'
 
@@ -6,7 +6,7 @@ import { Box } from '~/primitives/box'
 import { Text } from '~/primitives/text'
 import { Container } from '~/primitives/container'
 import { styled } from '~/theming/styled'
-import { getFirebaseAuth, SignInProviders, FirebaseUserType } from '~/infra/firebase/auth'
+import { getFirebaseAuth, SignInProviders } from '~/infra/firebase/auth'
 
 import FirebaseAuth from 'react-firebaseui/FirebaseAuth'
 import facebookIconUrl from './facebook-signin-provider-icon.svg'
@@ -34,24 +34,7 @@ const uiConfig = {
   },
 }
 
-const useListenAuthChange = () => useEffect(() => {
-  const firebaseAuth = getFirebaseAuth()
-
-  firebaseAuth.onAuthStateChanged((authProviderUser) => {
-    const isLoggingOut = authProviderUser === null
-
-    if (isLoggingOut) {
-      appStore.signOut()
-      return
-    }
-
-    appStore.signInWithFirebase(authProviderUser as FirebaseUserType)
-  })
-}, [])
-
 export const AuthPage = observer(() => {
-  useListenAuthChange()
-
   if (appStore.isAuthenticated) {
     return (
       <Redirect to="/" />
