@@ -1,7 +1,7 @@
 import { TextAlignProps, textAlign } from 'styled-system'
 import { styled } from '~/theming/styled/web'
 import { weight, WeightProps } from '~/theming/variants/weight'
-import type { WebStyledComponent, WebStyledComponentProps } from '~/domain'
+import type { WebStyledComponent, WebStyledComponentProps } from '~/primitives/domain'
 import { size, SizeProps } from '~/theming/variants/size'
 import type { InMindTheme } from '~/theming/types'
 

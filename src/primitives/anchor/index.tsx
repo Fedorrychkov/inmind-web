@@ -2,7 +2,7 @@ import { color, ColorProps, TextAlignProps, textAlign, compose } from 'styled-sy
 import { styled } from '~/theming/styled'
 import { weight, WeightProps } from '~/theming/variants/weight'
 import { transition, TransitionProps } from '~/theming/variants/transition'
-import type { WebStyledComponent, WebStyledComponentProps } from '~/domain'
+import type { WebStyledComponent, WebStyledComponentProps } from '~/primitives/domain'
 import { size, SizeProps } from '~/theming/variants/size'
 import { InMindTheme } from '~/theming/types'
 import { mapTestId } from '~/utils/map-test-id'

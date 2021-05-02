@@ -4,7 +4,7 @@ import type { SizeProps } from '~/theming/variants/size'
 import type { DesignProps } from '~/theming/variants/design'
 import type { TransitionProps } from '~/theming/variants/transition'
 import type { InMindTheme } from '~/theming/types'
-import type { WebStyledComponent, WebStyledComponentProps } from '~/domain'
+import type { WebStyledComponent, WebStyledComponentProps } from '~/primitives/domain'
 
 export type TextEnhancedProps = {
   oneLine?: boolean

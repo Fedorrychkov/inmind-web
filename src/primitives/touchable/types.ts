@@ -1,7 +1,7 @@
 import type { FlexboxProps, LayoutProps, SpaceProps } from 'styled-system'
 import type { TransitionProps } from '~/theming/variants/transition'
 import type { InMindTheme } from '~/theming/types'
-import type { WebStyledComponent, WebStyledComponentProps } from '~/domain'
+import type { WebStyledComponent, WebStyledComponentProps } from '~/primitives/domain'
 
 export type TouchableSharedProps =
 	& LayoutProps<InMindTheme>

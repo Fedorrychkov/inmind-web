@@ -1,5 +1,5 @@
 import type { UISize } from '~/theming/types'
-import type { WebStyledComponent, WebStyledComponentProps } from '~/domain'
+import type { WebStyledComponent, WebStyledComponentProps } from '~/primitives/domain'
 
 export type TextInputBaseSharedProps = {
   uiSize: UISize
