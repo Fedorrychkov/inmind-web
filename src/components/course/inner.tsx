@@ -6,6 +6,7 @@ import { useWrappedRef } from '~/hooks/use-ref'
 import { IMessage, ITestResult } from '~/interfaces/ICourse'
 import { Box, BoxProps } from '~/primitives/box'
 import {
+  UserAnswer,
   getCourseAnswers,
   getCourseHistory,
   getCurrentTestByHistory,
@@ -19,6 +20,17 @@ import {
 import { COURSE_INTERACTIONS } from '~/constants/course-interaction-types'
 import { styled } from '~/theming/styled'
 import { ITestQuestion } from '~/interfaces/ICourse'
+import { hasInterpolationTemplate, getInterpolatedString } from '~/helpers/string'
+
+const getVariablesFromAnswers = (userAnswers: UserAnswer[]) => userAnswers
+  .filter(answer => !!answer.variable)
+  .map(answer => ({
+    [answer.variable as string]: answer.value,
+  }))
+  .reduce((variables, current) => ({
+    ...variables,
+    ...current,
+  }), {})
 
 type Props = {
   course: any
@@ -29,7 +41,10 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   const scrollRef = useWrappedRef()
   const [messages, setMessages] = useState<IMessage[]>([])
   const [currentType, setCurrentType] = useState('')
+  const [textInputValue, setTextInput] = useState('')
+  const [textInputName, setTextInputName] = useState('')
   const [awaitedMessages, setAwaitedMessages] = useState<IMessage[]>([])
+  const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([])
   const [responseOptions, setResponseOptions] = useState([])
   const [currentTestResults, setCurrentTestResults] = useState<ITestResult[] | undefined>([])
   const [currentTestValue, setCurrentTestValue] = useState(0)
@@ -42,6 +57,8 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     return flattedMessages
   }, [course])
 
+  const interpolationVariables = useMemo(() => getVariablesFromAnswers(userAnswers), [userAnswers])
+
   const handleShowAnswerQuestions = useCallback((message, cb = () => {}, otherMessages: IMessage[]) => {
     if (![COURSE_INTERACTIONS.CHOOSEN, COURSE_INTERACTIONS.TEXT_INPUT].includes(message.type)) {
       return cb()
@@ -50,6 +67,8 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     setCurrentType(message.type)
     setAwaitedMessages(otherMessages)
     message.type === COURSE_INTERACTIONS.CHOOSEN && setResponseOptions(message.options)
+    message.type === COURSE_INTERACTIONS.TEXT_INPUT && setTextInput('')
+    message.type === COURSE_INTERACTIONS.TEXT_INPUT && message.variable && setTextInputName(message.variable)
   }, [setCurrentType, setAwaitedMessages, setResponseOptions])
 
   const currentResultMessage = useMemo(() => {
@@ -85,34 +104,54 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     return nextMessages
   }, [currentResultMessage])
 
-  const handleSetMessages = useCallback((currMessages: IMessage[], beforeNextMessages: IMessage[]) => {
+  const interpolateCurrentMessage = useCallback((message, answers: UserAnswer[] = []) => {
+    const { content } = message
+    const hasInterpolation = hasInterpolationTemplate(content)
+
+    if (!hasInterpolation) return message
+
+    const variables = answers.length ? getVariablesFromAnswers(answers) : interpolationVariables
+    const interpolatedStr = getInterpolatedString(content, variables)
+
+    return {
+      ...message,
+      content: interpolatedStr,
+    }
+  }, [interpolationVariables])
+
+  const handleSetMessages = useCallback((
+    currMessages: IMessage[],
+    beforeNextMessages: IMessage[] = [],
+    answers: UserAnswer[] = [],
+  ) => {
     if (!currMessages.length) return
 
     setTimeout(() => {
       const [message, ...otherMessages] = currMessages
       const [currentMessage, ...someNextMessages] =
         prepareGetCourseResultOrMessage([message, ...otherMessages], beforeNextMessages)
+      const interpolatedMessage = interpolateCurrentMessage(currentMessage, answers)
 
       setMessages(state => {
-        setCourseHistoriesByCourse(course, [...state, currentMessage])
+        setCourseHistoriesByCourse(course, [...state, interpolatedMessage])
 
-        if (currentMessage.testId && !currentTestId) {
-          const currentTest = getCurrentTestByMessage(flatMessages, currentMessage)
+        if (interpolatedMessage.testId && !currentTestId) {
+          const currentTest = getCurrentTestByMessage(flatMessages, interpolatedMessage)
           currentTest && setCurrentTestId(currentTest.id)
           currentTest && setCurrentTestResults(currentTest.results)
         }
 
-        if (currentMessage.isResult) {
+        if (interpolatedMessage.isResult) {
           setCurrentTestValue(0)
           setCurrentTestId('')
           setCurrentTestResults([])
         }
 
-        return [...state, currentMessage]
+        return [...state, interpolatedMessage]
       })
       handleShowAnswerQuestions(
-        currentMessage,
-        () => handleSetMessages(someNextMessages, [...beforeNextMessages, currentMessage]),
+        interpolatedMessage,
+        () => handleSetMessages(someNextMessages, [...beforeNextMessages, interpolatedMessage], answers),
         someNextMessages,
       )
     }, 1000)
@@ -124,6 +163,7 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     setMessages,
     setCurrentTestResults,
     prepareGetCourseResultOrMessage,
+    interpolateCurrentMessage,
   ])
 
   const handleCheckCurrentTest = useCallback((flatMessages: IMessage[], messagesHistory: IMessage[], userAnswers) => {
@@ -140,23 +180,42 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
 
   const onSelectOption = useCallback((optionId) => {
     const selectedOption: IMessage | any = responseOptions.find(({ id }) => id === optionId)
+    const lastMessage = messages[messages.length - 1]
 
     selectedOption && setMessages(state => [...state, { type: 'TEXT', author: 'ME', ...selectedOption }])
     selectedOption && setResponseOptions([])
     selectedOption && setCurrentType('')
 
     if (selectedOption) {
-      const lastMessage = messages[messages.length - 1]
       const count = (selectedOption as ITestQuestion).count
       const testId = (lastMessage as ITestQuestion & { testId: string }).testId
+      const payload: UserAnswer = { id: selectedOption.id, messageId: `${lastMessage.id}`, count, testId }
 
       testId && count && setCurrentTestValue(state => state + count)
-      setCourseAnswers(id, { id: selectedOption.id, messageId: lastMessage.id, count, testId })
+      setCourseAnswers(id, payload)
+      setUserAnswers(state => [...state, payload])
+    }
+
+    if (
+      selectedOption &&
+      lastMessage.type === 'CHOOSEN' &&
+      typeof lastMessage.correctAnswer !== 'undefined' &&
+      lastMessage.incorrectAnswerType === 'REPEAT' &&
+      lastMessage.correctAnswer !== selectedOption.id
+    ) {
+      const payload = [
+        ...(selectedOption.messages || []),
+        lastMessage,
+        ...awaitedMessages,
+      ]
+
+      handleSetMessages(payload, messages)
+      return
     }
 
     if (selectedOption && selectedOption.messages && selectedOption.messages.length) {
       const payload = [
-        ...selectedOption.messages,
+        ...(selectedOption.messages || []),
         ...awaitedMessages,
       ]
 
@@ -177,20 +236,40 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     selectedOption && handleSetMessages(awaitedMessages, messages)
   }, [id, awaitedMessages, responseOptions, messages, handleSetMessages, setMessages])
 
+  const onSend = useCallback(() => {
+    if (!textInputName) return
+
+    const lastMessage = messages[messages.length - 1]
+    const payload: UserAnswer = {
+      id: `${lastMessage.id}-input`,
+      messageId: `${lastMessage.id}`,
+      value: textInputValue,
+      variable: textInputName,
+    }
+
+    setMessages(state => [...state, { type: 'TEXT', author: 'ME', content: textInputValue }])
+    setCurrentType('')
+    setTextInputName('')
+    setCourseAnswers(id, payload)
+    setUserAnswers([...userAnswers, payload])
+    handleSetMessages(awaitedMessages, messages, [...userAnswers, payload])
+  }, [textInputName, awaitedMessages, textInputValue, id, messages, userAnswers, handleSetMessages])
+
   useEffect(() => {
     if (inited) return () => {}
     const answers = getCourseAnswers(id)
     const { messagesHistory } = getCourseHistory(id)
 
     try {
+      answers && setUserAnswers(answers || [])
       const remainingMessages = getRemainingMessages(flatMessages, messagesHistory || [])
 
       handleCheckCurrentTest(flatMessages, messagesHistory || [], answers || [])
       setMessages(messagesHistory || [])
-      handleSetMessages(remainingMessages, messagesHistory || [])
+      handleSetMessages(remainingMessages, messagesHistory || [], answers || [])
     } catch (ex) {
       console.error(ex)
-      handleSetMessages(flatMessages, [])
+      handleSetMessages(flatMessages, [], [])
     }
 
     setInited(true)
@@ -208,7 +287,16 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
       <ScrollContainer ref={scrollRef} px={4} flex={1}>
         {messages && <MessageGroup messages={messages} author={{...author, type: 'AUTHOR'}} />}
       </ScrollContainer>
-      <ChatInteraction px={4} buttons={responseOptions} type={currentType} onSelect={onSelectOption} />
+      <ChatInteraction
+        px={4}
+        buttons={responseOptions}
+        type={currentType}
+        onSelect={onSelectOption}
+        inputValue={textInputValue}
+        inputName={textInputName}
+        onChangeText={setTextInput}
+        onSend={onSend}
+      />
     </Box>
   )
 }

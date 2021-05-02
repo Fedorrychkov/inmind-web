@@ -4,9 +4,12 @@ import { IChapter, ICourse, IMessage, ITestType } from '~/interfaces/ICourse'
 import { CommunicationCourse } from '../courses-data/communications'
 
 type CourseHistory = Pick<ICourse, 'id'> & { messagesHistory: IMessage[] }
-type UserAnswer = {
+
+export type UserAnswer = {
   id?: string | number
   messageId?: string
+  value?: string | any,
+  variable?: string,
   count?: number
   testId?: string
 }

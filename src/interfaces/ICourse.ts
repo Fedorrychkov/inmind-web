@@ -6,6 +6,7 @@ export interface IAuthor {
 }
 
 export type Author = 'ME' | 'PERSON' | 'AUTHOR'
+export type IncorrectAnswerType = 'REPEAT'
 
 export type IMessageOptions = {
   id: number
@@ -17,6 +18,8 @@ export type IMessageOptions = {
 export type IMessageChoosenType = {
   type: 'CHOOSEN'
   content: string
+  incorrectAnswerType: IncorrectAnswerType
+  correctAnswer?: number | string
   options: IMessageOptions[]
 }
 
