@@ -3,7 +3,10 @@ import { getCollectionRef } from '~/infra/firebase/firestore'
 
 const USER_COLLECTION_KEY =  'users'
 
-const getUsersCollection = () => getCollectionRef(USER_COLLECTION_KEY)
+const getUsersCollection = () => getCollectionRef(USER_COLLECTION_KEY).withConverter({
+  fromFirestore: (userSnapshot) => User.fromRaw(userSnapshot.data()),
+  toFirestore: (user: User) => User.toRaw(user),
+})
 
 const getUser = async (userId: string) => {
   const userSnapshot = await getUsersCollection().doc(userId).get()
