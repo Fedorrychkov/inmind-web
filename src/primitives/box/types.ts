@@ -1,7 +1,7 @@
 import type { FlexboxProps, LayoutProps, PositionProps, SpaceProps } from 'styled-system'
 import type { InMindTheme } from '~/theming/types'
 import type { TransitionProps } from '~/theming/variants/transition'
-import type { WebStyledComponent, WebStyledComponentProps } from '~/domain'
+import type { WebStyledComponent, WebStyledComponentProps } from '~/primitives/domain'
 
 
 export const virtualBoxProps = ['width', 'height', 'display'] as const

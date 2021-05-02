@@ -1,3 +1,4 @@
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
@@ -8,6 +9,25 @@ import { store } from './store'
 import { GlobalStyle } from './theming/global'
 import { ThemeProvider } from './theming/provider'
 import { snowTheme } from './theming/snow'
+import { initFirebaseApp } from './infra/firebase'
+import { Auth } from './infra/firebase/auth'
+import { appStore } from './store'
+
+initFirebaseApp()
+
+Auth.onUserSignIn((authProviderUser) => {
+  const userProps = {
+    id: authProviderUser.uid,
+    email: authProviderUser.email,
+    displayName: authProviderUser.displayName,
+  }
+
+  appStore.signIn(userProps)
+})
+
+Auth.onUserSignOut(() => {
+  appStore.signOut()
+})
 
 ReactDOM.render(
   <React.StrictMode>

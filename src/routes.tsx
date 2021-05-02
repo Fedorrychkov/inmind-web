@@ -7,6 +7,8 @@ import {
   withRouter,
 } from 'react-router-dom'
 import { CoursePage } from './pages/course-page'
+import { AuthPage } from './pages/auth-page'
+import { PrivateRoute } from '~/common/private-route'
 
 const ScrollToTop = withRouter(({ history }: any) => {
   useEffect(() => {
@@ -18,13 +20,15 @@ const ScrollToTop = withRouter(({ history }: any) => {
     }
   }, [history])
 
-  return (null)
+  return null
 })
+
 export const Routes = () => (
   <Router basename={process.env.REACT_APP_PUBLIC_URL_PATHNAME}>
     <ScrollToTop />
     <Switch>
-      <Route path="/" exact component={CoursePage} />
+      <PrivateRoute path="/" exact component={CoursePage} />
+      <Route path="/login" exact component={AuthPage} />
       <Redirect to="/" />
     </Switch>
   </Router>
