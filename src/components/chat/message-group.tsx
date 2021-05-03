@@ -106,6 +106,10 @@ export const Message = ({
 
   const renderMessage = useMemo(() => {
     switch (type) {
+      case 'VIDEO_URL':
+        return (
+          <video src={content} controls width='100%'/>
+        )
       case 'IMG_URL':
         return (
           <Touchable onClick={openModal}>
@@ -123,9 +127,6 @@ export const Message = ({
 
   const renderModalContent = useMemo(() => {
     switch (type) {
-      // TODO: Добавить видео, думаю его проигрывание будет в попапе,
-      // TODO: ниже уже есть все для попапа, необходимо сделать вывод превью видео и
-      // TODO: проверить работоспособность обновив в курсе IMG_URL на VIDEO_URL, если все ок вернуть IMG URL
       case 'IMG_URL':
         return (
           <Box>
