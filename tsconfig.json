@@ -3,7 +3,7 @@
   "compilerOptions": {
     "declaration": true,
     "lib": [
-      "es6",
+      "esnext",
       "dom"
     ],
     "module": "esnext",

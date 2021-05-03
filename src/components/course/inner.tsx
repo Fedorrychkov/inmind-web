@@ -22,15 +22,9 @@ import { styled } from '~/theming/styled'
 import { ITestQuestion } from '~/interfaces/ICourse'
 import { hasInterpolationTemplate, getInterpolatedString } from '~/helpers/string'
 
-const getVariablesFromAnswers = (userAnswers: UserAnswer[]) => userAnswers
-  .filter(answer => !!answer.variable)
-  .map(answer => ({
-    [answer.variable as string]: answer.value,
-  }))
-  .reduce((variables, current) => ({
-    ...variables,
-    ...current,
-  }), {})
+const getVariablesFromAnswers = (userAnswers: UserAnswer[]) => Object.fromEntries(
+  userAnswers.filter(answer => !!answer.variable).map(answer => [answer.variable as string, answer.value]),
+)
 
 type Props = {
   course: any
@@ -82,7 +76,9 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
       return false
     })
 
-    if (!result) return undefined
+    if (!result) {
+      return undefined
+    }
 
     const { type, content, options, messages } = result
 
@@ -108,7 +104,9 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     const { content } = message
     const hasInterpolation = hasInterpolationTemplate(content)
 
-    if (!hasInterpolation) return message
+    if (!hasInterpolation) {
+      return message
+    }
 
     const variables = answers.length ? getVariablesFromAnswers(answers) : interpolationVariables
     const interpolatedStr = getInterpolatedString(content, variables)
@@ -124,7 +122,9 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
     beforeNextMessages: IMessage[] = [],
     answers: UserAnswer[] = [],
   ) => {
-    if (!currMessages.length) return
+    if (!currMessages.length) {
+      return
+    }
 
     setTimeout(() => {
       const [message, ...otherMessages] = currMessages
@@ -169,7 +169,9 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   const handleCheckCurrentTest = useCallback((flatMessages: IMessage[], messagesHistory: IMessage[], userAnswers) => {
     const currentTest = getCurrentTestByHistory(flatMessages, messagesHistory)
 
-    if (!currentTest || currentTest.type !== 'TEST') return
+    if (!currentTest || currentTest.type !== 'TEST') {
+      return
+    }
 
     const currentTestValue = getCurrentTestValue(currentTest, userAnswers)
 
@@ -181,12 +183,13 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   const onSelectOption = useCallback((optionId) => {
     const selectedOption: IMessage | any = responseOptions.find(({ id }) => id === optionId)
     const lastMessage = messages[messages.length - 1]
+    const hasSelectedAnswer = Boolean(selectedOption)
 
     selectedOption && setMessages(state => [...state, { type: 'TEXT', author: 'ME', ...selectedOption }])
     selectedOption && setResponseOptions([])
     selectedOption && setCurrentType('')
 
-    if (selectedOption) {
+    if (hasSelectedAnswer) {
       const count = (selectedOption as ITestQuestion).count
       const testId = (lastMessage as ITestQuestion & { testId: string }).testId
       const payload: UserAnswer = { id: selectedOption.id, messageId: `${lastMessage.id}`, count, testId }
@@ -196,13 +199,15 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
       setUserAnswers(state => [...state, payload])
     }
 
-    if (
-      selectedOption &&
+    // TODO: Условие нужно сделать более простым и очевидным, подправить типы,
+    // TODO: чтобы можно было разбить его без лишних упоминаний type choosen?
+    const isMessageExpectingCorrectAnswer = hasSelectedAnswer &&
       lastMessage.type === 'CHOOSEN' &&
       typeof lastMessage.correctAnswer !== 'undefined' &&
       lastMessage.incorrectAnswerType === 'REPEAT' &&
       lastMessage.correctAnswer !== selectedOption.id
-    ) {
+
+    if (isMessageExpectingCorrectAnswer) {
       const payload = [
         ...(selectedOption.messages || []),
         lastMessage,
@@ -237,7 +242,9 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   }, [id, awaitedMessages, responseOptions, messages, handleSetMessages, setMessages])
 
   const onSend = useCallback(() => {
-    if (!textInputName) return
+    if (!textInputName) {
+      return
+    }
 
     const lastMessage = messages[messages.length - 1]
     const payload: UserAnswer = {
