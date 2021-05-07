@@ -1,46 +1,103 @@
-# Getting Started with Create React App
+## inMind web app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Course capabilities
+Курс поддерживает свободные ответы в чате, показ видео и картинок, проведение тестов, подсчет очков и показ результатов. Для чата необходимо собирать курс в виде json схемы, сценария, где при определенных правилах можно получить необходимый профит.
 
-## Available Scripts
+Пример:
+```
+'data': {
+  'id': 1,
+  'version': '0.0.1',
+  'name': 'Принципы эффективной коммуникации',
+  'description': 'В начале урока будет интерактивный теоретический блок, затем необходимо будет выполнить два задания.',
+  'author': {
+    'name': 'Василиса',
+    'description': 'Менеджер проектов',
+    'intro': 'Мы будем последовательно знакомиться с ключевыми правилами конструктивного общения.',
+  },
+  'chapters': [
+    {
+      'id': 1,
+      'name': 'Поведение',
+      'messages': [
+        {
+          'type': 'TEXT',
+          'content': '',
+        }
+      ]
+    }
+  ]
+}
+```
 
-In the project directory, you can run:
+Курс содержит мета информацию для onboarding скрина чата, версию для проверки обновления версии курса, автора курса, а так же главы. В главах так же есть своя мета, вся мощь чата содержится в массиве сообщений. Коротко пройдемся по типамм и поведению.
 
-### `yarn start`
+**Типы сообщений**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. TEXT - обычный тип сообщений, нужен для показа текста без каких либо доп функций
+2. IMG_URL, VIDEO_URL - подразумевается, что в поле content будет хранится лишь ссылка файла, уже в компоненте сообщения будет вставка в зависимости от типа собщения необходимого тега
+3. TEXT_INPUT - тип для свободного ввода пользователем. Если есть необходимость использовать ответ пользователя далее в чате, нужно передать вместе с этим типо доп свойство - variable, в него записать название переменной, необходимо делать названия уникальнымми, иначе могут возникнуть ошибки при сохранении данных
+4. CHOOSEN - здесь ожидается несколько свойство. Options - массив кнопок, у кнопок должны быть уникальные id с 0 до n, так же можно указать correctAnswer, где будет хранится ид кнопки с верным ответом.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```
+'correectAnswer': 1,
+'options': [
+  {
+    'id': 0,
+    'content': 'Не верно',
+    'color': '#FFC876',
+    'messages': [],
+  },
+  {
+    'id': 0,
+    'content': 'Верно',
+    'color': '#FFC876',
+    'messages': [],
+  },
+],
+```
+6. TEST - это, на данный момент, самый сложный кусок логики в чате. Здесь хранятся вопросы по текущему тесту. Он содержит в себе ряд необходтимых свойств для корректной работы. id теста, должен быть уникальный для всего курса. results - массив результатов, из него будет браться результат прохождения теста, ниже будет приведен пример json.
 
-### `yarn test`
+```
+'results': [
+  {
+    'type': 'TEXT',
+    'count': {
+      'min': 0,
+      'max': 20,
+    },
+    'content': 'Результат\nЕсли skill <=20: Вы не всегда откровенны с другими людьми и склонны держать некоторые вещи в себе. Иногда вы можете говорить уклончиво или иносказательно, ожидая, что собеседник сам догадается о том, что вы имеете ввиду.\nТакой коммуникативный стиль чреват непониманием и недоразумениями. Также, вероятно, вам часто не хватает терпения выслушать собеседника до конца, особенно если его точка зрения отличается от вашей. Часто вы не обращаете внимания на эмоциональное состояние собеседника, а значит вам бывает сложно понять его мысли и чувства. Вы не считаете нужным демонстрировать интерес к словам говорящего. Это может создавать у другой стороны ощущение, что вам безразлично то, что он говорит.',
+    'messages': [
+      {
+        'content': 'В следующих уроках мы будем развивать эти навыки. А это значит, что процесс общения для вас станет более комфортным.',
+        'color': '#FFC876',
+      },
+    ],
+  },
+]
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+В этом примере важным является content как текстовый результат прохождения теста, так и поле count, оно участвует в сравнении текущего результата пользвателя с промежутком баллов. Так же должен писутствовать массив question, он включает в себя массив обычных CHOOSEN собщений, с добавленным полем count: number, это поле участвует в суммировании результатов пльзвоателя по каждому вопросу.
 
-### `yarn build`
+```
+'questions': [
+  {
+    'type': 'CHOOSEN',
+    'content': 'Всегда ли вы планируете результат (цель) предстоящего разговора с человеком, этапы и способы его достижения?',
+    'color': '#C9F1FF',
+    'options': [
+      {
+        'id': 0,
+        'content': 'Почти никогда',
+        'count': 1,
+        'color': '#FFC876',
+      },
+    ]
+  },
+]
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Функционал чата**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Каждое сообщение в массиве может включать в себя не глубокую вложденность (в текущей реализации от 7 мая 2021 года поддерживается 2 уровня вложенности, родитель и ребенок), то есть в сообщении внутри мжет хранится массив сообщений. Если это CHOOSEN, внутри нее хранится массив кнопок, в каждой из которых может хранится массив message, это помогает вставлять доп развитие сценария курса в зависимости от ответов пользвателя. Поле correctAnswer в вопросах используется для донесения до юзера корректности верного ответа, при не верном нажатии юзер может получить доп сообщения с разжовыванием, что ожидалось и почему не верно, а после вопрос будет повторятся вновь и вновь, пока нне будет дан верный ответ.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
