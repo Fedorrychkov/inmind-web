@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { COURSE_INTERACTIONS } from '~/constants/course-interaction-types'
 import { Button } from '~/common/button'
 import { Box, BoxProps } from '~/primitives/box'
@@ -15,6 +15,8 @@ type Props = {
   onSend?: () => void
   buttons?: IMessageOptions[]
   type?: string
+  inputValue?: string
+  inputName?: string
 } & BoxProps
 
 export const ChatInteraction = ({
@@ -23,8 +25,12 @@ export const ChatInteraction = ({
   onSend = () => {},
   buttons,
   type,
+  inputName,
+  inputValue,
   ...boxProps
 }: Props) => {
+  const onChange = useCallback((e) => onChangeText(e.target.value), [onChangeText])
+
   return (
     <Container {...boxProps}>
       <Box flex={1}>
@@ -43,8 +49,13 @@ export const ChatInteraction = ({
           </ButtonsContainer>
         )}
         {type === COURSE_INTERACTIONS.TEXT_INPUT && (
-          <Box>
+          <Box as="form" mr={2} onSubmit={onSend}>
             <TextInput
+              type="text"
+              placeholder="Введи свой ответ"
+              value={inputValue}
+              name={inputName || 'chat-interaction'}
+              onChange={onChange}
             />
           </Box>
         )}
@@ -56,7 +67,7 @@ export const ChatInteraction = ({
       </Box>
       <Box>
         {type === COURSE_INTERACTIONS.TEXT_INPUT ? (
-          <ChatSendButton><Icon type="send" color="contrast" width={21} height={21} /></ChatSendButton>
+          <ChatSendButton onClick={onSend}><Icon type="send" color="contrast" width={21} height={21} /></ChatSendButton>
         ) : (
           <AvatarContainer><Icon type="person-man" width={38} height={38} /></AvatarContainer>
         )}

@@ -4,9 +4,12 @@ import { IChapter, ICourse, IMessage, ITestType } from '~/interfaces/ICourse'
 import { CommunicationCourse } from '../courses-data/communications'
 
 type CourseHistory = Pick<ICourse, 'id'> & { messagesHistory: IMessage[] }
-type UserAnswer = {
+
+export type UserAnswer = {
   id?: string | number
   messageId?: string
+  value?: string | any,
+  variable?: string,
   count?: number
   testId?: string
 }
@@ -113,7 +116,9 @@ export const getCurrentTestByHistory = (
 ): IMessage | undefined => {
   const allTests = allMessages.filter(message => message.type === 'TEST')
 
-  if (!allTests || !allTests.length) return
+  if (!allTests || !allTests.length) {
+    return
+  }
 
   const allQuestionsByTestsInHistory = historyMesesages
     .filter(message => message.testId)
@@ -133,7 +138,9 @@ export const getCurrentTestByHistory = (
     }, {})
 
   const currentTest = allTests.find((test: IMessage) => {
-    if (test.type !== 'TEST') return false
+    if (test.type !== 'TEST') {
+      return false
+    }
 
     const currentTestFromHistory = allQuestionsByTestsInHistory[test.id]
 

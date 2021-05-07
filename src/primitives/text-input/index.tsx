@@ -17,6 +17,8 @@ const TextInputBase = styled.input.attrs(mapTestId)<TextInputBaseEnhancedProps>(
 		padding: 0px;
 		fontSize: ${p.theme.uiSizes[p.uiSize] * 0.33}px;
 		color: ${transparentize(0.2, p.theme.colors.contrast)};
+		border: 0;
+		outline: none;
 	`,
   weights.medium as any,
 ) as TextInputComponent
