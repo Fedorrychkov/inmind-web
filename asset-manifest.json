@@ -1,22 +1,26 @@
 {
   "files": {
     "main.css": "/inmind-web/static/css/main.389bd3db.chunk.css",
-    "main.js": "/inmind-web/static/js/main.730402c2.chunk.js",
-    "main.js.map": "/inmind-web/static/js/main.730402c2.chunk.js.map",
-    "runtime-main.js": "/inmind-web/static/js/runtime-main.f4b9ad06.js",
-    "runtime-main.js.map": "/inmind-web/static/js/runtime-main.f4b9ad06.js.map",
-    "static/js/2.00dd005a.chunk.js": "/inmind-web/static/js/2.00dd005a.chunk.js",
-    "static/js/2.00dd005a.chunk.js.map": "/inmind-web/static/js/2.00dd005a.chunk.js.map",
-    "static/js/3.da8ee4e7.chunk.js": "/inmind-web/static/js/3.da8ee4e7.chunk.js",
-    "static/js/3.da8ee4e7.chunk.js.map": "/inmind-web/static/js/3.da8ee4e7.chunk.js.map",
+    "main.js": "/inmind-web/static/js/main.e940b7b2.chunk.js",
+    "main.js.map": "/inmind-web/static/js/main.e940b7b2.chunk.js.map",
+    "runtime-main.js": "/inmind-web/static/js/runtime-main.7c2d731a.js",
+    "runtime-main.js.map": "/inmind-web/static/js/runtime-main.7c2d731a.js.map",
+    "static/css/2.570e8e00.chunk.css": "/inmind-web/static/css/2.570e8e00.chunk.css",
+    "static/js/2.cfdd7d28.chunk.js": "/inmind-web/static/js/2.cfdd7d28.chunk.js",
+    "static/js/2.cfdd7d28.chunk.js.map": "/inmind-web/static/js/2.cfdd7d28.chunk.js.map",
+    "static/js/3.f942fd78.chunk.js": "/inmind-web/static/js/3.f942fd78.chunk.js",
+    "static/js/3.f942fd78.chunk.js.map": "/inmind-web/static/js/3.f942fd78.chunk.js.map",
     "index.html": "/inmind-web/index.html",
+    "static/css/2.570e8e00.chunk.css.map": "/inmind-web/static/css/2.570e8e00.chunk.css.map",
     "static/css/main.389bd3db.chunk.css.map": "/inmind-web/static/css/main.389bd3db.chunk.css.map",
-    "static/js/2.00dd005a.chunk.js.LICENSE.txt": "/inmind-web/static/js/2.00dd005a.chunk.js.LICENSE.txt"
+    "static/js/2.cfdd7d28.chunk.js.LICENSE.txt": "/inmind-web/static/js/2.cfdd7d28.chunk.js.LICENSE.txt",
+    "static/media/facebook-signin-provider-icon.659c9e06.svg": "/inmind-web/static/media/facebook-signin-provider-icon.659c9e06.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.f4b9ad06.js",
-    "static/js/2.00dd005a.chunk.js",
+    "static/js/runtime-main.7c2d731a.js",
+    "static/css/2.570e8e00.chunk.css",
+    "static/js/2.cfdd7d28.chunk.js",
     "static/css/main.389bd3db.chunk.css",
-    "static/js/main.730402c2.chunk.js"
+    "static/js/main.e940b7b2.chunk.js"
   ]
 }
