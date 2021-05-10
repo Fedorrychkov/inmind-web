@@ -30,6 +30,11 @@ export const ChatInteraction = ({
   ...boxProps
 }: Props) => {
   const onChange = useCallback((e) => onChangeText(e.target.value), [onChangeText])
+  const handleSend = useCallback((e) => {
+    e.preventDefault()
+
+    onSend()
+  }, [onSend])
 
   return (
     <Container {...boxProps}>
@@ -49,7 +54,7 @@ export const ChatInteraction = ({
           </ButtonsContainer>
         )}
         {type === COURSE_INTERACTIONS.TEXT_INPUT && (
-          <Box as="form" mr={2} onSubmit={onSend}>
+          <Box as="form" mr={2} onSubmit={handleSend}>
             <TextInput
               type="text"
               placeholder="Введи свой ответ"

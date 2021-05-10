@@ -242,10 +242,6 @@ export const CourseInner = ({ course, ...boxProps }: Props) => {
   }, [id, awaitedMessages, responseOptions, messages, handleSetMessages, setMessages])
 
   const onSend = useCallback(() => {
-    if (!textInputName) {
-      return
-    }
-
     const lastMessage = messages[messages.length - 1]
     const payload: UserAnswer = {
       id: `${lastMessage.id}-input`,
