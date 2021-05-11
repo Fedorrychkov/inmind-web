@@ -10,6 +10,10 @@ import lostPublicSpeakingSrc from './communications-landing/red-lost-public-spea
 import avoidConflictsSrc from './communications-landing/green-avoid-conflicts.png'
 import noCareerDevelopmentSrc from './communications-landing/purple-no-career-development.png'
 
+import { ReactComponent as AudienceDevelopersIcon } from './communications-landing/audience/audience-developers.svg'
+import { ReactComponent as AudienceProjectManagersIcon } from './communications-landing/audience/audience-project-managers.svg'
+import { ReactComponent as AudienceNewbiesIcon } from './communications-landing/audience/audience-newbies.svg'
+
 const CommunicationsCourseLandingPage = () => (
   <Layout>
     <Hero>
@@ -95,6 +99,35 @@ const CommunicationsCourseLandingPage = () => (
         </Skill>
       </Skills>
     </SoftSkillsSection>
+
+    <AudienceSection>
+      <AudienceHeading>Для кого этот курс?</AudienceHeading>
+      <AudienceContainer>
+        <AudienceTypeCard>
+          <AudienceTypeIconContainer>
+            <AudienceNewbiesIcon />
+          </AudienceTypeIconContainer>
+
+          <AudienceTypeName>Для начинающих</AudienceTypeName>
+        </AudienceTypeCard>
+
+        <AudienceTypeCard>
+          <AudienceTypeIconContainer>
+            <AudienceProjectManagersIcon />
+          </AudienceTypeIconContainer>
+
+          <AudienceTypeName>Для проектных менеджеров</AudienceTypeName>
+        </AudienceTypeCard>
+
+        <AudienceTypeCard>
+          <AudienceTypeIconContainer>
+            <AudienceDevelopersIcon />
+          </AudienceTypeIconContainer>
+
+          <AudienceTypeName>Для разработчиков</AudienceTypeName>
+        </AudienceTypeCard>
+      </AudienceContainer>
+    </AudienceSection>
   </Layout>
 )
 
@@ -231,6 +264,44 @@ const SkillName = styled.p`
 
     background: #242424;
   }
+`
+
+const AudienceSection = styled(Section)`
+  padding-top: 68px;
+`
+
+const AudienceHeading = styled(HeroHeading)`
+  margin: 0 0 44px;
+`
+
+const AudienceContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const AudienceTypeCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 32px;
+  margin-bottom: 32px;
+
+  width: 100%;
+  aspect-ratio: 18 / 9;
+
+  background: #FFFFFF;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(9, 30, 66, 0.3);
+  border-radius: 6px;
+`
+
+const AudienceTypeIconContainer = styled.div`
+
+`
+
+const AudienceTypeName = styled.p`
+  font-size: 22px;
+  line-height: 1.5;
+  text-align: center;
 `
 
 
