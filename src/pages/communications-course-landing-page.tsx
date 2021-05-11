@@ -1,7 +1,8 @@
 import React from 'react'
 import { styled } from '~/theming/styled'
-import { ReactComponent as TypographyIcon } from './type.svg'
-import { ReactComponent as ClockIcon } from './clock.svg'
+import { ReactComponent as TypographyIcon } from './communications-landing/type.svg'
+import { ReactComponent as ClockIcon } from './communications-landing/clock.svg'
+import chatScreen from './communications-landing/chat-screen.png'
 
 const CommunicationsCourseLandingPage = () => (
   <Layout>
@@ -27,7 +28,38 @@ const CommunicationsCourseLandingPage = () => (
         </CourseLength>
       </CourseDetailsContainer>
     </Hero>
-    <Section></Section>
+    <Section>
+      <AdvantageContainer>
+        <AdvantageScreenImage src={chatScreen} />
+        <Advantage>
+          <AdvantageActionLabel>
+            Учись
+          </AdvantageActionLabel>
+          <AdvantageHeading>Простота обучения</AdvantageHeading>
+          <AdvantageCaption>
+            Эффективное общение - это инструмент,
+            который помогает достигать целей в любых сферах:
+            продвижение на работе, крепкие отношения,
+            полезные знакомства.
+          </AdvantageCaption>
+        </Advantage>
+      </AdvantageContainer>
+
+      <AdvantageContainer>
+        <AdvantageScreenImage src={chatScreen} />
+        <Advantage>
+          <AdvantageActionLabel>
+            Доступно
+          </AdvantageActionLabel>
+          <AdvantageHeading>Парктика + Теория</AdvantageHeading>
+          <AdvantageCaption>
+            Наш тренажер проведет вас через большое число
+            реальных рабочих кейсов и поможет овладеть
+            навыком эффективной коммуникации на практике.
+          </AdvantageCaption>
+        </Advantage>
+      </AdvantageContainer>
+    </Section>
   </Layout>
 )
 
@@ -40,7 +72,7 @@ const HeroHeading = styled.h2`
 `
 
 const HeroCaption = styled.p`
-  font-size: 22px;
+  font-size: 18px;
   margin-bottom: 52px;
 `
 
@@ -79,7 +111,7 @@ const IconContainer = styled.div`
 `
 
 const Section = styled.div`
-
+  padding: 64px 32px;
 `
 
 const Hero = styled(Section)`
@@ -88,5 +120,37 @@ const Hero = styled(Section)`
   background-color: #C9F1FF;
   color: #242424;
 `
+
+const AdvantageActionLabel = styled.p`
+  margin: 0 0 4px;
+
+  color: #F46856;
+  font-size: 18px;
+  font-weight: bold;
+`
+
+const AdvantageContainer = styled.div`
+  margin-bottom: 48px;
+`
+
+const Advantage = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const AdvantageHeading = styled(HeroHeading)`
+  margin-bottom: 12px;
+`
+
+const AdvantageCaption = styled(HeroCaption)`
+  line-height: 24px;
+`
+
+const AdvantageScreenImage = styled.img`
+  width: 100%;
+  object-fit: contain;
+  margin-bottom: 24px;
+`
+
 
 export { CommunicationsCourseLandingPage }
