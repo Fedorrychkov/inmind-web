@@ -128,6 +128,45 @@ const CommunicationsCourseLandingPage = () => (
         </AudienceTypeCard>
       </AudienceContainer>
     </AudienceSection>
+
+    <CourseStructureSection>
+      <CourseStructureHeading>Структура курса</CourseStructureHeading>
+
+      <CourseStructureCaption>
+        <p>Каждая подтема содержит от 1 до 4 уроков.</p>
+        <p>В уроках предусмотрена практика с автоматическим ботом.</p>
+      </CourseStructureCaption>
+
+      <CourseStructureList>
+        <CourseStructurePoint>
+          Общие принципы конструктивного общения
+        </CourseStructurePoint>
+
+        <CourseStructurePoint>
+          Доверительные отношения: как слышать и понимать друг друга
+        </CourseStructurePoint>
+
+        <CourseStructurePoint>
+          Критика и продвигающая обратная связь
+        </CourseStructurePoint>
+
+        <CourseStructurePoint>
+          Эффективная аргументация
+        </CourseStructurePoint>
+
+        <CourseStructurePoint>
+          Решение конфликтов
+        </CourseStructurePoint>
+
+        <CourseStructurePoint>
+          Работа в команде
+        </CourseStructurePoint>
+
+        <CourseStructurePoint>
+          Работа с собственным стрессом
+        </CourseStructurePoint>
+      </CourseStructureList>
+    </CourseStructureSection>
   </Layout>
 )
 
@@ -143,7 +182,6 @@ const HeroCaption = styled.p`
   font-size: 18px;
   margin-bottom: 52px;
 `
-
 
 const Layout = styled.div`
 
@@ -304,5 +342,43 @@ const AudienceTypeName = styled.p`
   text-align: center;
 `
 
+const CourseStructureSection = styled(Section)``
+
+const CourseStructureHeading = styled(HeroHeading)`
+  margin-bottom: 18px;
+`
+
+const CourseStructureCaption = styled.div`
+  margin-bottom: 54px;
+
+  font-style: italic;
+  font-size: 16px;
+
+  p {
+    margin: 0;
+  }
+`
+
+const CourseStructureList = styled.ol`
+  list-style: decimal inside;
+;
+
+  margin: 0;
+  padding: 0;
+`
+
+const CourseStructurePoint = styled.li`
+  padding: 18px 43px;
+  margin: 0;
+
+  color: #242424;
+  border-radius: 4px;
+
+  transition: all 0.25s 0s ease-in-out;
+
+  &:hover {
+    background-color: #F6FBFF;
+  }
+`
 
 export { CommunicationsCourseLandingPage }
