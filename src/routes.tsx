@@ -9,6 +9,7 @@ import {
 import { CoursePage } from './pages/course-page'
 import { AuthPage } from './pages/auth-page'
 import { PrivateRoute } from '~/common/private-route'
+import { CommunicationsCourseLandingPage } from '~/pages/communications-course-landing-page'
 
 const ScrollToTop = withRouter(({ history }: any) => {
   useEffect(() => {
@@ -29,6 +30,7 @@ export const Routes = () => (
     <Switch>
       <PrivateRoute path="/" exact component={CoursePage} />
       <Route path="/login" exact component={AuthPage} />
+      <Route path="/about-communications-course" exact component={CommunicationsCourseLandingPage} />
       <Redirect to="/" />
     </Switch>
   </Router>
