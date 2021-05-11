@@ -14,6 +14,13 @@ import { ReactComponent as AudienceDevelopersIcon } from './communications-landi
 import { ReactComponent as AudienceProjectManagersIcon } from './communications-landing/audience/audience-project-managers.svg'
 import { ReactComponent as AudienceNewbiesIcon } from './communications-landing/audience/audience-newbies.svg'
 
+import logoStockmanSrc from './communications-landing/companies/logo-stockman.png'
+import logoJacobsSrc from './communications-landing/companies/logo-jacobs.png'
+import logoAlphaBankSrc from './communications-landing/companies/logo-alpha-bank.png'
+import logoHenkelSrc from './communications-landing/companies/logo-henkel.png'
+import logoRussianBankSrc from './communications-landing/companies/logo-russian-bank.png'
+
+
 const CommunicationsCourseLandingPage = () => (
   <Layout>
     <Hero>
@@ -167,6 +174,47 @@ const CommunicationsCourseLandingPage = () => (
         </CourseStructurePoint>
       </CourseStructureList>
     </CourseStructureSection>
+
+
+    <OurStudentsSection>
+      <OurStudentsHeading>С нами уже учаться сотрудники компаний</OurStudentsHeading>
+      <CompanyList>
+        <CompanyLogo src={logoStockmanSrc} />
+        <CompanyLogo src={logoJacobsSrc} />
+        <CompanyLogo src={logoAlphaBankSrc} />
+        <CompanyLogo src={logoHenkelSrc} />
+        <CompanyLogo src={logoRussianBankSrc} />
+      </CompanyList>
+
+      <StudentsStastistics>
+        <StudentsStatsCard>
+          <CardHeading color="#1C9971">
+            Учатся
+          </CardHeading>
+          <CardDescription>
+            511 — студентов за время обучения на курсах
+          </CardDescription>
+        </StudentsStatsCard>
+
+        <StudentsStatsCard>
+          <CardHeading color="#9B51E0">
+            Не бросают
+          </CardHeading>
+          <CardDescription>
+            78% — средняя доходимость студентов на один курс
+          </CardDescription>
+        </StudentsStatsCard>
+
+        <StudentsStatsCard>
+          <CardHeading color="#EB5757">
+            Любят
+          </CardHeading>
+          <CardDescription>
+            4,86 — средняя оценка курса после завершения
+          </CardDescription>
+        </StudentsStatsCard>
+      </StudentsStastistics>
+    </OurStudentsSection>
   </Layout>
 )
 
@@ -332,9 +380,7 @@ const AudienceTypeCard = styled.div`
   border-radius: 6px;
 `
 
-const AudienceTypeIconContainer = styled.div`
-
-`
+const AudienceTypeIconContainer = styled.div``
 
 const AudienceTypeName = styled.p`
   font-size: 22px;
@@ -379,6 +425,60 @@ const CourseStructurePoint = styled.li`
   &:hover {
     background-color: #F6FBFF;
   }
+`
+
+const OurStudentsSection = styled(Section)`
+  padding-top: 64px;
+
+  background-color: #F6FBFF;
+`
+
+const OurStudentsHeading = styled(HeroHeading)`
+  margin-bottom: 54px;
+`
+
+const CompanyList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-bottom: 54px;
+`
+
+const CompanyLogo = styled.img`
+  max-height: 60px;
+  max-width: 201px;
+  margin: 0 0 18px;
+`
+
+const StudentsStastistics = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const StudentsStatsCard = styled.div`
+  width: 368px;
+  height: 160px;
+  padding: 32px;
+  margin-bottom: 24px;
+
+  background-color: #fff;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(9, 30, 66, 0.3);
+  border-radius: 6px;
+`
+
+const CardHeading = styled.p`
+  margin-bottom: 8px;
+
+  font-size: 28px;
+  font-weight: bold;
+  color: ${({ color }) => color};
+`
+
+const CardDescription = styled.p`
+  font-size: 18px;
+  line-height: 1.7;
 `
 
 export { CommunicationsCourseLandingPage }
