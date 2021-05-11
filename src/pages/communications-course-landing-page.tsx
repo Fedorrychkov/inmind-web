@@ -2,7 +2,13 @@ import React from 'react'
 import { styled } from '~/theming/styled'
 import { ReactComponent as TypographyIcon } from './communications-landing/type.svg'
 import { ReactComponent as ClockIcon } from './communications-landing/clock.svg'
-import chatScreen from './communications-landing/chat-screen.png'
+
+import chatScreenSrc from './communications-landing/chat-screen.png'
+
+import talkingDifficultiesSrc from './communications-landing/blue-talking-difficulties.png'
+import lostPublicSpeakingSrc from './communications-landing/red-lost-public-speaking.png'
+import avoidConflictsSrc from './communications-landing/green-avoid-conflicts.png'
+import noCareerDevelopmentSrc from './communications-landing/purple-no-career-development.png'
 
 const CommunicationsCourseLandingPage = () => (
   <Layout>
@@ -28,9 +34,10 @@ const CommunicationsCourseLandingPage = () => (
         </CourseLength>
       </CourseDetailsContainer>
     </Hero>
-    <Section>
+
+    <AdvantagesSection>
       <AdvantageContainer>
-        <AdvantageScreenImage src={chatScreen} />
+        <AdvantageScreenImage src={chatScreenSrc} />
         <Advantage>
           <AdvantageActionLabel>
             Учись
@@ -46,7 +53,7 @@ const CommunicationsCourseLandingPage = () => (
       </AdvantageContainer>
 
       <AdvantageContainer>
-        <AdvantageScreenImage src={chatScreen} />
+        <AdvantageScreenImage src={chatScreenSrc} />
         <Advantage>
           <AdvantageActionLabel>
             Доступно
@@ -59,7 +66,35 @@ const CommunicationsCourseLandingPage = () => (
           </AdvantageCaption>
         </Advantage>
       </AdvantageContainer>
-    </Section>
+    </AdvantagesSection>
+
+    <SoftSkillsSection>
+      <SoftSkillsHeading>
+        С какими проблемами soft skills мы помогаем
+      </SoftSkillsHeading>
+
+      <Skills>
+        <Skill>
+          <SkillImage src={talkingDifficultiesSrc} />
+          <SkillName>Трудности в общении</SkillName>
+        </Skill>
+
+        <Skill>
+          <SkillImage src={lostPublicSpeakingSrc} />
+          <SkillName>Теряетесь на публике</SkillName>
+        </Skill>
+
+        <Skill>
+          <SkillImage src={noCareerDevelopmentSrc} />
+          <SkillName>Нет развития в карьере</SkillName>
+        </Skill>
+
+        <Skill>
+          <SkillImage src={avoidConflictsSrc} />
+          <SkillName>Избегаете конфликтов</SkillName>
+        </Skill>
+      </Skills>
+    </SoftSkillsSection>
   </Layout>
 )
 
@@ -121,6 +156,8 @@ const Hero = styled(Section)`
   color: #242424;
 `
 
+const AdvantagesSection = styled(Section)``
+
 const AdvantageActionLabel = styled.p`
   margin: 0 0 4px;
 
@@ -130,7 +167,7 @@ const AdvantageActionLabel = styled.p`
 `
 
 const AdvantageContainer = styled.div`
-  margin-bottom: 48px;
+  margin-bottom: 24px;
 `
 
 const Advantage = styled.div`
@@ -150,6 +187,50 @@ const AdvantageScreenImage = styled.img`
   width: 100%;
   object-fit: contain;
   margin-bottom: 24px;
+`
+
+const SoftSkillsSection = styled(Section)`
+  background: #F9FCFF;
+`
+
+const SoftSkillsHeading = styled(HeroHeading)`
+  margin: 0 0 36px;
+`
+
+const Skills = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const Skill = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  margin-bottom: 48px;
+`
+
+const SkillImage = styled.img`
+  margin-bottom: 12px;
+  object-fit: contain;
+`
+
+const SkillName = styled.p`
+  position: relative;
+  font-size: 18px;
+
+  &:after {
+    position: absolute;
+    bottom: -10px;
+
+    display: block;
+    content: '';
+    width: 72px;
+    height: 2px;
+
+    background: #242424;
+  }
 `
 
 
