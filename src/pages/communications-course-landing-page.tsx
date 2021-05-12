@@ -20,6 +20,8 @@ import logoAlphaBankSrc from './communications-landing/companies/logo-alpha-bank
 import logoHenkelSrc from './communications-landing/companies/logo-henkel.png'
 import logoRussianBankSrc from './communications-landing/companies/logo-russian-bank.png'
 
+import { ReactComponent as ProsIcon } from './communications-landing/icon-pros.svg'
+
 
 const CommunicationsCourseLandingPage = () => (
   <Layout>
@@ -215,6 +217,60 @@ const CommunicationsCourseLandingPage = () => (
         </StudentsStatsCard>
       </StudentsStastistics>
     </OurStudentsSection>
+
+    <PricingsSection>
+      <PricingsHeading>Тарифы</PricingsHeading>
+      <PricingPlansContainer>
+        <SubscriptionPlanCard>
+          <PricingPlanHeading>Я сам</PricingPlanHeading>
+
+          <PricingPlanDescription>
+            Если хотите обучаться в свободное время
+            и не тратить на это много денег и без
+            дополнительных вложений
+          </PricingPlanDescription>
+
+          <PricingDetails>
+            <PricingDetailsItem>
+              <PricingIconContainer>
+                <ProsIcon />
+              </PricingIconContainer>
+              Первый плюс
+            </PricingDetailsItem>
+
+            <PricingDetailsItem>
+              <PricingIconContainer>
+                <ProsIcon />
+              </PricingIconContainer>
+              Второй плюс
+            </PricingDetailsItem>
+
+            <PricingDetailsItem>
+              <PricingIconContainer>
+                <ProsIcon />
+              </PricingIconContainer>
+              Третий плюс
+            </PricingDetailsItem>
+
+            <PricingDetailsItem>
+              <PricingIconContainer>
+                <ProsIcon />
+              </PricingIconContainer>
+              Четвертый плюс
+            </PricingDetailsItem>
+
+            <PricingDetailsItem>
+              <PricingIconContainer>
+                <ProsIcon />
+              </PricingIconContainer>
+              Пятый плюс
+            </PricingDetailsItem>
+          </PricingDetails>
+
+          <PurchaseButton>Купить подписку</PurchaseButton>
+        </SubscriptionPlanCard>
+      </PricingPlansContainer>
+    </PricingsSection>
   </Layout>
 )
 
@@ -479,6 +535,82 @@ const CardHeading = styled.p`
 const CardDescription = styled.p`
   font-size: 18px;
   line-height: 1.7;
+`
+
+const PricingsSection = styled(Section)`
+`
+
+const PricingsHeading = styled(HeroHeading)`
+  margin-bottom: 44px;
+`
+
+const PricingPlansContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const SubscriptionPlanCard = styled.div`
+  padding: 40px;
+
+  background: #FFFFFF;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(9, 30, 66, 0.3);
+  border-radius: 6px;
+`
+
+const PricingPlanHeading = styled.p`
+  margin-bottom: 6px;
+
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 1.15;
+`
+
+const PricingPlanDescription = styled.p`
+  position: relative;
+  margin-bottom: 36px;
+
+  font-size: 14px;
+  line-height: 20px;
+
+  &::after {
+    position: absolute;
+    bottom: -18px;
+    left: 0;
+    content: '';
+    height: 2px;
+    width: 100%;
+    background-color: #DFE1E6;;
+  }
+`
+
+const PricingDetails = styled.ul`
+  margin: 0 0 32px;
+  padding: 0;
+`
+
+const PricingDetailsItem = styled.li`
+  display: flex;
+  align-items: center;
+
+  padding: 8px 16px 8px 0;
+`
+
+const PricingIconContainer = styled.div`
+  padding-top: 6px;
+  margin-right: 18px;
+`
+
+
+const PurchaseButton = styled.button`
+  width: 100%;
+  padding: 20px;
+
+  background: #134EE4;
+  color: white;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  border: none;
 `
 
 export { CommunicationsCourseLandingPage }
