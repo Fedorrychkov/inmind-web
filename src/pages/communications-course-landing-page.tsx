@@ -22,31 +22,35 @@ import logoRussianBankSrc from './communications-landing/companies/logo-russian-
 
 import { ReactComponent as ProsIcon } from './communications-landing/icon-pros.svg'
 
+import storyCharactersSrc from './communications-landing/story-characters.png'
 
 const CommunicationsCourseLandingPage = () => (
   <Layout>
-    <Hero>
-      <HeroHeading>Принципы эффективной коммуникации</HeroHeading>
-      <HeroCaption>Что делать, если попался сложный человек в команде? Расскажем на практике!</HeroCaption>
-      <ActionButton>
-        Начать учиться за 0 ₽
-      </ActionButton>
-      <CourseDetailsContainer>
-        <CourseDetails>
-          <IconContainer>
-            <TypographyIcon />
-          </IconContainer>
-          7 блоков
-        </CourseDetails>
+    <HeroSection>
+      <SectionContent>
+        <HeroHeading>Принципы эффективной коммуникации</HeroHeading>
+        <HeroCaption>Что делать, если попался сложный человек в команде? Расскажем на практике!</HeroCaption>
+        <ActionButton>
+          Начать учиться за 0 ₽
+        </ActionButton>
+        <CourseDetailsContainer>
+          <CourseDetails>
+            <IconContainer>
+              <TypographyIcon />
+            </IconContainer>
+            7 блоков
+          </CourseDetails>
 
-        <CourseLength>
-          <IconContainer>
-            <ClockIcon />
-          </IconContainer>
-          по 20 минут
-        </CourseLength>
-      </CourseDetailsContainer>
-    </Hero>
+          <CourseLength>
+            <IconContainer>
+              <ClockIcon />
+            </IconContainer>
+            по 20 минут
+          </CourseLength>
+        </CourseDetailsContainer>
+      </SectionContent>
+      <HeroCharactersImage src={storyCharactersSrc} />
+    </HeroSection>
 
     <AdvantagesSection>
       <AdvantageContainer>
@@ -182,7 +186,7 @@ const CommunicationsCourseLandingPage = () => (
       <OurStudentsHeading>С нами уже учатся сотрудники компаний</OurStudentsHeading>
       <CompanyList>
         <CompanyLogo src={logoStockmanSrc} />
-        <CompanyLogo src={logoJacobsSrc} />
+        <CompanyLogo src={logoJacobsSrc} height="36px" />
         <CompanyLogo src={logoAlphaBankSrc} />
         <CompanyLogo src={logoHenkelSrc} />
         <CompanyLogo src={logoRussianBankSrc} />
@@ -274,21 +278,85 @@ const CommunicationsCourseLandingPage = () => (
   </Layout>
 )
 
-const HeroHeading = styled.h2`
+const Section = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 48px 32px 72px;
+
+  @media (min-width: 680px) {
+    padding: 48px 48px 72px;
+  }
+`
+
+const SectionContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 1100px;
+  width: 100%;
+  margin: auto;
+  position: relative;
+`
+
+const Layout = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
+
+const Image = styled.img`
+  max-width: 502px;
+`
+
+const Heading = styled.h2`
   margin-bottom: 20px;
+  max-width: 622px;
 
   font-size: 36px;
   font-weight: 900;
   line-height: 44px;
+  text-align: center;
 `
 
 const HeroCaption = styled.p`
-  font-size: 18px;
+  max-width: 622px;
   margin-bottom: 56px;
+
+  font-size: 18px;
 `
 
-const Layout = styled.div`
+const HeroSection = styled(Section)`
+  position: relative;
+  align-items: flex-start;
+  width: 100%;
+  padding-top: 36px;
+  padding-bottom: 24px;
+  background-color: #C9F1FF;
+  color: #242424;
+`
 
+const HeroCharactersImage = styled.img`
+  display: none;
+
+  @media (min-width: 680px) {
+    position: absolute;
+    right: 2%;
+    bottom: 0;
+
+    display: block;
+    width: 400px;
+  }
+
+  @media (min-width: 1000px) {
+    right: auto;
+    left: 650px;
+  }
+`
+
+const HeroHeading = styled(Heading)`
+  text-align: left;
 `
 
 const ActionButton = styled.button`
@@ -304,12 +372,16 @@ const ActionButton = styled.button`
 
 const CourseDetailsContainer = styled.footer`
   display: flex;
-  justify-content: space-between;
 `
 
 const CourseDetails = styled.div`
   display: flex;
   align-items: center;
+  margin-right: 24px;
+
+  &:last-of-type {
+    margin-right: 0;
+  }
 `
 
 const CourseLength = styled(CourseDetails)`
@@ -320,18 +392,11 @@ const IconContainer = styled.div`
   margin-right: 6px;
 `
 
-const Section = styled.div`
-  padding: 48px 32px 72px;
-`
-
-const Hero = styled(Section)`
-  width: 100%;
-  padding: 36px 24px 24px;
-  background-color: #C9F1FF;
-  color: #242424;
-`
-
 const AdvantagesSection = styled(Section)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   padding-top: 64px;
 `
 
@@ -356,7 +421,8 @@ const Advantage = styled.div`
   flex-direction: column;
 `
 
-const AdvantageHeading = styled(HeroHeading)`
+const AdvantageHeading = styled(Heading)`
+  text-align: left;
   margin-bottom: 12px;
 `
 
@@ -365,7 +431,7 @@ const AdvantageCaption = styled(HeroCaption)`
   margin-bottom: 0;
 `
 
-const AdvantageScreenImage = styled.img`
+const AdvantageScreenImage = styled(Image)`
   width: 100%;
   object-fit: contain;
   margin-bottom: 24px;
@@ -375,14 +441,14 @@ const SoftSkillsSection = styled(Section)`
   background: #F9FCFF;
 `
 
-const SoftSkillsHeading = styled(HeroHeading)`
-  margin: 0 0 36px;
+const SoftSkillsHeading = styled(Heading)`
+  margin: 0 0 42px;
 `
 
 const Skills = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-flow: row wrap;
+  justify-content: center;
 `
 
 const Skill = styled.div`
@@ -390,7 +456,7 @@ const Skill = styled.div`
   flex-direction: column;
   align-items: flex-start;
 
-  margin-bottom: 48px;
+  margin: 0 24px 48px;
 `
 
 const SkillImage = styled.img`
@@ -417,13 +483,16 @@ const SkillName = styled.p`
 
 const AudienceSection = styled(Section)``
 
-const AudienceHeading = styled(HeroHeading)`
+const AudienceHeading = styled(Heading)`
   margin: 0 0 44px;
 `
 
 const AudienceContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-flow: row wrap;
+  justify-content: center;
+  margin-left: -32px;
+  margin-right: -32px;
 `
 
 const AudienceTypeCard = styled.div`
@@ -431,15 +500,17 @@ const AudienceTypeCard = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 32px;
+  margin: 0 16px 32px;
 
   width: 100%;
-  max-width: 368px;
+  max-width: 300px;
+  min-width: 280px;
   padding: 32px;
 
   background: #FFFFFF;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(9, 30, 66, 0.3);
   border-radius: 6px;
+
 `
 
 const AudienceTypeIconContainer = styled.div``
@@ -454,7 +525,7 @@ const CourseStructureSection = styled(Section)`
   padding-top: 18px;
 `
 
-const CourseStructureHeading = styled(HeroHeading)`
+const CourseStructureHeading = styled(Heading)`
   margin-bottom: 12px;
 `
 
@@ -496,35 +567,38 @@ const OurStudentsSection = styled(Section)`
   background-color: #F6FBFF;
 `
 
-const OurStudentsHeading = styled(HeroHeading)`
+const OurStudentsHeading = styled(Heading)`
   margin-bottom: 48px;
 `
 
 const CompanyList = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-flow: row wrap;
   align-items: center;
+  justify-content: center;
 
-  margin-bottom: 54px;
+  margin-bottom: 32px;
 `
 
 const CompanyLogo = styled.img`
-  max-height: 54px;
+  max-height: ${({ height = '54px' }) => height};
   max-width: 180px;
-  margin: 0 0 32px;
+  margin: 0 18px 32px;
 `
 
 const StudentsStastistics = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-flow: row wrap;
+  justify-content: center;
 `
 
 const StudentsStatsCard = styled.div`
   width: 100%;
+  min-width: 320px;
+  max-width: 360px;
   min-height: 160px;
   padding: 32px;
-  margin-bottom: 24px;
+  margin: 0 12px 24px;
 
   background-color: #fff;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(9, 30, 66, 0.3);
@@ -547,7 +621,7 @@ const CardDescription = styled.p`
 const PricingsSection = styled(Section)`
 `
 
-const PricingsHeading = styled(HeroHeading)`
+const PricingsHeading = styled(Heading)`
   margin-bottom: 44px;
 `
 
@@ -558,6 +632,7 @@ const PricingPlansContainer = styled.div`
 `
 
 const SubscriptionPlanCard = styled.div`
+  max-width: 464px;
   padding: 40px 32px;
   margin-left: -12px;
   margin-right: -12px;
