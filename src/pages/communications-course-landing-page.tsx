@@ -275,7 +275,7 @@ const CommunicationsCourseLandingPage = () => (
 )
 
 const HeroHeading = styled.h2`
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 
   font-size: 36px;
   font-weight: 900;
@@ -284,7 +284,7 @@ const HeroHeading = styled.h2`
 
 const HeroCaption = styled.p`
   font-size: 18px;
-  margin-bottom: 52px;
+  margin-bottom: 56px;
 `
 
 const Layout = styled.div`
@@ -304,6 +304,7 @@ const ActionButton = styled.button`
 
 const CourseDetailsContainer = styled.footer`
   display: flex;
+  justify-content: space-between;
 `
 
 const CourseDetails = styled.div`
@@ -312,7 +313,6 @@ const CourseDetails = styled.div`
 `
 
 const CourseLength = styled(CourseDetails)`
-  margin-left: 80px;
 `
 
 const IconContainer = styled.div`
@@ -326,7 +326,7 @@ const Section = styled.div`
 
 const Hero = styled(Section)`
   width: 100%;
-  padding: 36px 24px;
+  padding: 36px 24px 24px;
   background-color: #C9F1FF;
   color: #242424;
 `
@@ -430,11 +430,12 @@ const AudienceTypeCard = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 32px;
+  justify-content: center;
   margin-bottom: 32px;
 
   width: 100%;
-  aspect-ratio: 18 / 9;
+  max-width: 368px;
+  padding: 32px;
 
   background: #FFFFFF;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(9, 30, 66, 0.3);
@@ -461,7 +462,7 @@ const CourseStructureCaption = styled.div`
   margin-bottom: 24px;
 
   font-style: italic;
-  font-size: 16px;
+  font-size: 18px;
 
   p {
     margin: 0;
@@ -477,10 +478,11 @@ const CourseStructureList = styled.ol`
 `
 
 const CourseStructurePoint = styled.li`
-  padding: 18px 43px;
+  padding: 18px 24px;
   margin: 0;
 
   color: #242424;
+  font-size: 18px;
   border-radius: 4px;
 
   transition: all 0.25s 0s ease-in-out;
@@ -519,8 +521,8 @@ const StudentsStastistics = styled.div`
 `
 
 const StudentsStatsCard = styled.div`
-  width: 368px;
-  height: 160px;
+  width: 100%;
+  min-height: 160px;
   padding: 32px;
   margin-bottom: 24px;
 
@@ -539,7 +541,7 @@ const CardHeading = styled.p`
 
 const CardDescription = styled.p`
   font-size: 18px;
-  line-height: 1.7;
+  line-height: 1.4;
 `
 
 const PricingsSection = styled(Section)`
@@ -556,7 +558,9 @@ const PricingPlansContainer = styled.div`
 `
 
 const SubscriptionPlanCard = styled.div`
-  padding: 40px;
+  padding: 40px 32px;
+  margin-left: -12px;
+  margin-right: -12px;
 
   background: #FFFFFF;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(9, 30, 66, 0.3);
