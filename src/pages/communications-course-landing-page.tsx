@@ -71,7 +71,7 @@ const CommunicationsCourseLandingPage = () => (
           <AdvantageActionLabel>
             Доступно
           </AdvantageActionLabel>
-          <AdvantageHeading>Парктика + Теория</AdvantageHeading>
+          <AdvantageHeading>Практика + Теория</AdvantageHeading>
           <AdvantageCaption>
             Наш тренажер проведет вас через большое число
             реальных рабочих кейсов и поможет овладеть
@@ -143,7 +143,7 @@ const CommunicationsCourseLandingPage = () => (
 
       <CourseStructureCaption>
         <p>Каждая подтема содержит от 1 до 4 уроков.</p>
-        <p>В уроках предусмотрена практика с автоматическим ботом.</p>
+        <p>Уроки содержат практику с автоматическим ботом.</p>
       </CourseStructureCaption>
 
       <CourseStructureList>
@@ -179,7 +179,7 @@ const CommunicationsCourseLandingPage = () => (
 
 
     <OurStudentsSection>
-      <OurStudentsHeading>С нами уже учаться сотрудники компаний</OurStudentsHeading>
+      <OurStudentsHeading>С нами уже учатся сотрудники компаний</OurStudentsHeading>
       <CompanyList>
         <CompanyLogo src={logoStockmanSrc} />
         <CompanyLogo src={logoJacobsSrc} />
@@ -321,7 +321,7 @@ const IconContainer = styled.div`
 `
 
 const Section = styled.div`
-  padding: 64px 32px;
+  padding: 48px 32px 72px;
 `
 
 const Hero = styled(Section)`
@@ -331,7 +331,9 @@ const Hero = styled(Section)`
   color: #242424;
 `
 
-const AdvantagesSection = styled(Section)``
+const AdvantagesSection = styled(Section)`
+  padding-top: 64px;
+`
 
 const AdvantageActionLabel = styled.p`
   margin: 0 0 4px;
@@ -342,7 +344,11 @@ const AdvantageActionLabel = styled.p`
 `
 
 const AdvantageContainer = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 48px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 `
 
 const Advantage = styled.div`
@@ -356,6 +362,7 @@ const AdvantageHeading = styled(HeroHeading)`
 
 const AdvantageCaption = styled(HeroCaption)`
   line-height: 24px;
+  margin-bottom: 0;
 `
 
 const AdvantageScreenImage = styled.img`
@@ -408,9 +415,7 @@ const SkillName = styled.p`
   }
 `
 
-const AudienceSection = styled(Section)`
-  padding-top: 68px;
-`
+const AudienceSection = styled(Section)``
 
 const AudienceHeading = styled(HeroHeading)`
   margin: 0 0 44px;
@@ -444,14 +449,16 @@ const AudienceTypeName = styled.p`
   text-align: center;
 `
 
-const CourseStructureSection = styled(Section)``
+const CourseStructureSection = styled(Section)`
+  padding-top: 18px;
+`
 
 const CourseStructureHeading = styled(HeroHeading)`
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 `
 
 const CourseStructureCaption = styled.div`
-  margin-bottom: 54px;
+  margin-bottom: 24px;
 
   font-style: italic;
   font-size: 16px;
@@ -484,13 +491,11 @@ const CourseStructurePoint = styled.li`
 `
 
 const OurStudentsSection = styled(Section)`
-  padding-top: 64px;
-
   background-color: #F6FBFF;
 `
 
 const OurStudentsHeading = styled(HeroHeading)`
-  margin-bottom: 54px;
+  margin-bottom: 48px;
 `
 
 const CompanyList = styled.div`
@@ -502,9 +507,9 @@ const CompanyList = styled.div`
 `
 
 const CompanyLogo = styled.img`
-  max-height: 60px;
-  max-width: 201px;
-  margin: 0 0 18px;
+  max-height: 54px;
+  max-width: 180px;
+  margin: 0 0 32px;
 `
 
 const StudentsStastistics = styled.div`
@@ -600,7 +605,6 @@ const PricingIconContainer = styled.div`
   padding-top: 6px;
   margin-right: 18px;
 `
-
 
 const PurchaseButton = styled.button`
   width: 100%;
