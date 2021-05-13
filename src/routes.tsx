@@ -30,7 +30,8 @@ export const Routes = () => (
     <Switch>
       <PrivateRoute path="/" exact component={CoursePage} />
       <Route path="/login" exact component={AuthPage} />
-      <Route path="/about-communications-course" exact component={CommunicationsCourseLandingPage} />
+      <Route path="/promo/effective-communications" exact component={CommunicationsCourseLandingPage} />
+
       <Redirect to="/" />
     </Switch>
   </Router>
