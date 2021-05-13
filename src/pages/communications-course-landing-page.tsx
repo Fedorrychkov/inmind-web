@@ -53,9 +53,9 @@ const CommunicationsCourseLandingPage = () => (
     </HeroSection>
 
     <AdvantagesSection>
-      <AdvantageContainer>
-        <AdvantageScreenImage src={chatScreenSrc} />
-        <Advantage>
+      <AdvantagesSectionContent>
+        <ReorderedAdvantageScreenImage src={chatScreenSrc} />
+        <AdvantageOne>
           <AdvantageActionLabel>
             Учись
           </AdvantageActionLabel>
@@ -66,12 +66,10 @@ const CommunicationsCourseLandingPage = () => (
             продвижение на работе, крепкие отношения,
             полезные знакомства.
           </AdvantageCaption>
-        </Advantage>
-      </AdvantageContainer>
+        </AdvantageOne>
 
-      <AdvantageContainer>
         <AdvantageScreenImage src={chatScreenSrc} />
-        <Advantage>
+        <AdvantageTwo>
           <AdvantageActionLabel>
             Доступно
           </AdvantageActionLabel>
@@ -81,8 +79,8 @@ const CommunicationsCourseLandingPage = () => (
             реальных рабочих кейсов и поможет овладеть
             навыком эффективной коммуникации на практике.
           </AdvantageCaption>
-        </Advantage>
-      </AdvantageContainer>
+        </AdvantageTwo>
+      </AdvantagesSectionContent>
     </AdvantagesSection>
 
     <SoftSkillsSection>
@@ -282,6 +280,7 @@ const Section = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 
   padding: 48px 32px 72px;
 
@@ -395,9 +394,35 @@ const IconContainer = styled.div`
 const AdvantagesSection = styled(Section)`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
 
   padding-top: 64px;
+  margin: auto;
+`
+
+const AdvantagesSectionContent = styled(SectionContent)`
+  display: grid;
+  grid-template-areas:
+    "advantage_one_picture"
+    "advantage_one_text"
+    "advantage_two_picture"
+    "advantage_two_text";
+
+  justify-items: center;
+  row-gap: 16px;
+
+  @media (min-width: 960px) {
+    justify-items: right;
+    align-items: center;
+
+    row-gap: 54px;
+    column-gap: 8%;
+
+    grid-template-areas:
+      "advantage_one_picture advantage_one_text"
+      "advantage_two_text advantage_two_picture";
+  }
 `
 
 const AdvantageActionLabel = styled.p`
@@ -408,17 +433,23 @@ const AdvantageActionLabel = styled.p`
   font-weight: bold;
 `
 
-const AdvantageContainer = styled.div`
-  margin-bottom: 48px;
+const Advantage = styled.div`
+  display: flex;
+  flex-flow: column;
+  margin-bottom: 36px;
+  max-width: 500px;
+`
 
-  &:last-of-type {
-    margin-bottom: 0;
+const AdvantageOne = styled(Advantage)`
+  grid-area: advantage_one_text;
+
+  @media(min-width: 960px) {
+    justify-self: flex-start;
   }
 `
 
-const Advantage = styled.div`
-  display: flex;
-  flex-direction: column;
+const AdvantageTwo = styled(Advantage)`
+  grid-area: advantage_two_text;
 `
 
 const AdvantageHeading = styled(Heading)`
@@ -432,9 +463,25 @@ const AdvantageCaption = styled(HeroCaption)`
 `
 
 const AdvantageScreenImage = styled(Image)`
+  grid-area: advantage_two_picture;
+
   width: 100%;
   object-fit: contain;
-  margin-bottom: 24px;
+  max-width: 500px;
+
+  @media (min-width: 960px) {
+    justify-self: flex-start;
+    flex: 1 1 380px;
+  }
+`
+
+const ReorderedAdvantageScreenImage = styled(AdvantageScreenImage)`
+  grid-area: advantage_one_picture;
+
+  @media (min-width: 960px) {
+    justify-self: flex-end;
+    order: 2;
+  }
 `
 
 const SoftSkillsSection = styled(Section)`
