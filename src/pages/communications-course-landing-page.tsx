@@ -31,7 +31,7 @@ const CommunicationsCourseLandingPage = () => (
         <HeroHeading>Принципы эффективной коммуникации</HeroHeading>
         <HeroCaption>Что делать, если попался сложный человек в команде? Расскажем на практике!</HeroCaption>
         <ActionButton>
-          Начать учиться за 0 ₽
+          Купить подписку
         </ActionButton>
         <CourseDetailsContainer>
           <CourseDetails>
@@ -319,6 +319,24 @@ const Heading = styled.h2`
   text-align: center;
 `
 
+const CommonButton = styled.button`
+  padding: 20px 36px;
+
+  background: #134EE4;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  border: none;
+
+  color: white;
+  font-weight: bold;
+
+  transition: all 0.2s 0s ease-out;
+
+  &:hover {
+    background: #0b43cf;
+  }
+`
+
 const HeroCaption = styled.p`
   max-width: 622px;
   margin-bottom: 56px;
@@ -358,15 +376,8 @@ const HeroHeading = styled(Heading)`
   text-align: left;
 `
 
-const ActionButton = styled.button`
-  background-color: #134EE4;
-  padding: 20px 36px;
+const ActionButton = styled(CommonButton)`
   margin-bottom: 48px;
-  border: none;
-  border-radius: 4px;
-
-  color: #fff;
-  font-weight: bold;
 `
 
 const CourseDetailsContainer = styled.footer`
@@ -732,15 +743,8 @@ const PricingIconContainer = styled.div`
   margin-right: 18px;
 `
 
-const PurchaseButton = styled.button`
+const PurchaseButton = styled(CommonButton)`
   width: 100%;
-  padding: 20px;
-
-  background: #134EE4;
-  color: white;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 4px;
-  border: none;
 `
 
 export { CommunicationsCourseLandingPage }
